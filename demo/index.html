@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8 />
+        <title>DELPH-IN Tree Visualiser</title>
+        <link rel="stylesheet" type="text/css" media="screen" href="demo.css"/>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"></script>
+        <script type="text/javascript" src="tree.js"></script>
+        <script type="text/javascript" src="demo.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="input-container">
+                <form action="#" method="post" onsubmit="return false;">
+                    <div class="input-line">
+                        <input id="input-text" type="text" value="Your sentence goes here.">
+                        <input id="send-input" type="submit">
+                    </div>
+                    <div class="input-line">
+                        Results:
+                        <select id="input-results">
+                            <option value="1">1</option>
+                            <option value="5" selected="">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="results-status"></div>
+        <div id="results-container"></div>
+    </body>
+</html>
+    
+    
