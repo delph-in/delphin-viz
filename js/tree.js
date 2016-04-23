@@ -1,5 +1,24 @@
-DAUGHTER_HSPACE = 20;
-DAUGHTER_VSPACE = 30;
+/* An SVG renderer for DELPH-IN derivation trees. Targets the ERG API that is
+ * currently under development and is documented here:
+ * http://moin.delph-in.net/ErgApi
+ * 
+ * This code is adapted from code found in Woodley Packard's full forest treebanker,
+ * which can be found here: http://sweaglesw.org/svn/treebank/trunk/
+ * 
+ * Usage:
+ *     drawTree(derivation, element)
+ *    
+ * Where 'derivation' is a derivation object as found in the ERG API, and
+ * 'element' as an element for the resultant SVG element to be appended to the
+ * end of its content.
+ */
+
+
+// Horizontal distance between nodes
+var DAUGHTER_HSPACE = 20;
+
+// Vertical distance between nodes
+var DAUGHTER_VSPACE = 30;
 
 
 function drawTree(derivation, element) {

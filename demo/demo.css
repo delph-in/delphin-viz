@@ -8,16 +8,25 @@
 }
 
 #input-container {
-    width: 400px;
+    width: 480px;
     margin: auto;
 }
 
 #input-text {
-    width: 300px;
+    width: 400px;
 }
 
 .input-line {
     margin-top: 0.5em;
+}
+
+#text-input {
+    font-size: 2em;
+}
+
+
+#results-info {
+    text-align: center;
 }
 
 #results-container {
