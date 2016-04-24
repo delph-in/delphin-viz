@@ -53,7 +53,7 @@
     padding-right: 2em;
 }
 
-.tree {
+.tree, .mrs {
     display: inline-block;
     vertical-align: middle;
 }

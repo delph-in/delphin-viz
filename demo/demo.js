@@ -1,7 +1,5 @@
 /* TODO
-   -- implement result line status
-   -- ask Stephan about getting lex_type identifiers
-   -- ask Stephan about getting to/from character span values 
+   -- short labels when available
    -- MRS
  */
 
@@ -19,6 +17,7 @@ Templates.result = [
         '<div class="result-inner">',
             '<div class="num"><%= resultNum %></div>',
             '<div class="tree"></div>',
+            '<div class="mrs"></div>',
         '</div>',
     '</div>'].join("\n");
 
@@ -58,8 +57,7 @@ function doResults(data){
         }
         
         if (result.mrs) {
-            //TODO
-            //$result.append(mrs);
+            var svg = drawMrs(result.mrs, $result.find('.mrs')[0]);
         }   
     }
 }
