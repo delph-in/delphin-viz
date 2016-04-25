@@ -1,6 +1,7 @@
 /* TODO
    -- short labels when available
-   -- MRS
+   -- incorporate types when available
+   -- MRS 
  */
 
 var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
@@ -9,7 +10,7 @@ var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
 var DEV_MODE = false;
 
 
-// Using underscore/lodash  Templates
+// Using underscore.js/lodash.js  Templates
 var Templates = {};
 
 Templates.result = [
