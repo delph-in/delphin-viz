@@ -1,3 +1,5 @@
+.hidden {display: none}
+
 #header {
 
 }
@@ -56,5 +58,22 @@
 .tree, .mrs {
     display: inline-block;
     vertical-align: middle;
+    position: relative;
+    margin: 1em;
 }
 
+.tools {
+    position: absolute;
+    right: 0;
+}
+
+.tools div:hover {
+    cursor: pointer;
+}
+
+.tools .save {
+    background: url('img/content-save.png') no-repeat;
+    width: 24px;
+    height: 24px;
+}
+    
