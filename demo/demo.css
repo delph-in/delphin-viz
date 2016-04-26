@@ -37,6 +37,21 @@
     margin-top: 2em;
 }
 
+/* tooltips */
+
+.ui-tooltip {
+    border-radius: 5px;
+    background-color: rgba(255,255,255,0.9);
+	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+	padding: .3em;
+	position: absolute;
+	z-index: 9999;
+}
+
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
 .result {
     display: table-row;
 }
@@ -55,7 +70,7 @@
     padding-right: 2em;
 }
 
-.tree, .mrs {
+.viz {
     display: inline-block;
     vertical-align: middle;
     position: relative;
@@ -67,13 +82,27 @@
     right: 0;
 }
 
-.tools div:hover {
+.save .icon {
+    display: inline-block;
+    vertical-align: middle;
+    background: url('img/content-save.png') no-repeat;
+    height: 24px;
+    width: 24px;
+}
+
+/* TODO: positionings aren't going to be great cross-browsers
+   Probably should change it to be two display-inline divs 
+ */
+
+.save div {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: sans-serif;
+    font-size: 0.65em;
+    font-weight: 600;
+}
+
+.save:hover {
     cursor: pointer;
 }
 
-.tools .save {
-    background: url('img/content-save.png') no-repeat;
-    width: 24px;
-    height: 24px;
-}
-    

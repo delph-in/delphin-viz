@@ -60,4 +60,5 @@ function drawMrs(mrs, element) {
 
     var finalBbox = svg.bbox();
     svg.size(finalBbox.width+10, finalBbox.height+10);
+    return svg.node;
 }
