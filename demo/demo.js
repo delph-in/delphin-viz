@@ -4,6 +4,7 @@
    -- short labels when available
    -- incorporate types when available
    -- node tooltips with identifiers/types; need to resolve strategy 
+   
    mrs.js
    -- finish basic representation
    -- add variable highlighting
