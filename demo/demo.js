@@ -1,8 +1,26 @@
 /* TODO
-   -- make tree.js use svg.js -- this will also generate more compliant SVGs
+   tree.js
+   -- switch to using svg.js -- will generate more compliant SVGs
    -- short labels when available
    -- incorporate types when available
-   -- MRS 
+   -- node tooltips with identifiers/types; need to resolve strategy 
+   mrs.js
+   -- finish basic representation
+   -- add variable highlighting
+   -- add span highlighting
+   -- variable information 
+ 
+   Workout strategy for tooltips. Options:
+   JavaScript (element used will be appended to the DOM)
+   -- jQuery UI 
+      CDN available
+      Use 'track' option in order follow mouse
+   -- opentip
+      https://github.com/enyo/opentip/blob/master/downloads/opentip-native.min.js
+      Has mouse tracking
+
+   CSS  (won't be able to follow mouse like in logon demo)
+   
  */
 
 var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
