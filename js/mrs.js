@@ -1,8 +1,8 @@
+var MRSVALS = ['LTOP', 'INDEX', 'RELS', 'HCONS'];
 var RELVALS = ['predicate', 'label', 'ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
 
 
 // Magic pixel numbers
-
 var MAXWIDTH = 500;    // width before a line of elements is wrapped 
 var xGap = 10;         // horizontal gap between elements
 var yGap = 20;         // vertical gap between elements
@@ -16,6 +16,7 @@ function drawMrs(mrs, element) {
 
     // Begin a new line of rels
     var relLine = container.group();
+    var relLines = [];
     
     // for positioning rels
     var currX = xGap;
@@ -24,8 +25,8 @@ function drawMrs(mrs, element) {
     // draw all the rels
     for (var i=0; i < mrs.relations.length; i++) {       
         var rel = mrs.relations[i];
-        var relGroup = relLine.group().transform({x:currX, y:currY}); 
-
+        var relGroup = relLine.group();
+        
         // all the text rows for a rel
         var text = relGroup.text(function (add) {
             for (var j=0; j < RELVALS.length; j++) {        
@@ -45,30 +46,54 @@ function drawMrs(mrs, element) {
             }
         }).leading();
 
-
         drawSquareBrackets(relGroup, 5, 5, 5);
+        relGroup.transform({x:currX, y:currY}); 
 
-        var bbox = relGroup.bbox();         
-        //relGroup.transform({y:currY + bbox.height});
 
         // update rel positions 
         if (currX >= MAXWIDTH) {
             // Starting a new line of rels
             currX = xGap;
-            currY += relLine.bbox().height + yGap;
-            var relLine = container.group();
+            currY += relLine.tbox().height + yGap;
+            relLines.push(relLine);
+            relLine = container.group();
         } else {
             // move along by last relGroup width
-            currX += bbox.width + yGap;
+            currX += relGroup.tbox().width + 2*xGap;
         }
+            
+    }
+    relLines.push(relLine);
+    
+    //vertically align the rels in each line
+    for (var i=0; i < relLines.length; i++) {
+        relLine = relLines[i];
+        var tbox = relLine.tbox();
+        var liney = tbox.y + tbox.height/2;
+        var rels = relLine.children();
+
+        for (var j=0; j < rels.length; j++) {
+            var rel = rels[j];
+            var tbox2 = rel.tbox();
+            
+            // align the rel vertically
+            rel.cy(liney);
+
+            // add comma after the
+            var comma = rel.plain(',').transform({x:tbox2.width, y:tbox2.height/2});
+        }
+
     }
 
+    // remove trailing comma
+    comma.remove();
+    
     drawSquareBrackets(container, xGap, 5, 5);
     
     // SET 2: render constraints
 
-    var finalBbox = container.bbox();
-    svg.size(finalBbox.width + xGap, finalBbox.height + yGap);
+    var finalBbox = container.tbox();
+    svg.size(finalBbox.width + 2*xGap, finalBbox.height + 2*yGap);
     return svg.node;
 }
 
