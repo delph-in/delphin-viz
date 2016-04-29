@@ -27,7 +27,7 @@
 var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
 
 // Makes a few things easier for development
-var DEV_MODE = true;
+var DEV_MODE = false;
 
 
 // Using underscore.js/lodash.js  Templates
@@ -197,6 +197,7 @@ $(document).ready(function(){
             dataType: 'json',
             data: {
                 'derivation': 'json',
+                'mrs': $('#input-mrs').prop('checked') ? 'json' : null,
                 'input': $('#input-text').val(),
                 'results': $('#input-results').val()
             },
