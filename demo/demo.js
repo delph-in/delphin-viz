@@ -28,7 +28,7 @@ var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
 
 // Renders pre-fetched ERG call so don't need to keep hitting the delph-in server
 // during development.
-var DEV_MODE = true;
+var DEV_MODE = false;
 
 
 // Using underscore.js/lodash.js  Templates
