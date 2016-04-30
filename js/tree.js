@@ -25,8 +25,10 @@ function drawTree(derivation, element) {
     // need to add the SVG to the DOM before rendering, otherwise the height of
     // SVG elements won't be available during rendering.
     var svg = svgelement('svg');
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
     svg.setAttributeNS(null, "version", "1.1");    
-    element.appendChild(svg)
+    element.appendChild(svg);
 
     var g = render_tree(svg, derivation);
     svg.appendChild(g);
@@ -132,7 +134,7 @@ function render_yield(svg, str) {
 
 
 function svgelement(type) {
-	return document.createElementNS("http://www.w3.org/2000/svg", 'svg:'+type);
+	return document.createElementNS("http://www.w3.org/2000/svg", type);
 }
 
 
