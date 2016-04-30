@@ -21,19 +21,21 @@ function drawMrs(mrs, element) {
 
     // Begin a new line of rels
     var relLines = [];
+    var ltopText = container.plain('LTOP').cy(yGap);
+    var indexText = container.plain('INDEX').cy(2*yGap);
+    var relsText = container.plain('RELS');
     var relList = container.group();
     
     // for positioning rels
     var startX = 100;
 
     var currX = startX;
-    var currY = yGap;
+    var currY = 3*yGap;
     
     //Add left angle bracket
     var leftAngle = relList.polyline();
 
     var relLine = relList.group();
-
 
     // draw all the rels
     for (var i=0; i < mrs.relations.length; i++) {       
@@ -97,29 +99,36 @@ function drawMrs(mrs, element) {
 
             // add comma after the
             var tbox2 = rel.tbox();
-            var comma = rel.plain(',').transform({x:tbox2.width, y:tbox2.height/2});
+            var comma = rel.plain(',').center(tbox2.width, tbox2.height/2);
         }
     }
     // remove trailing comma
     comma.remove();
 
-    //update left angle dimensions, now we know where the midpoint is
     var firstLine = relLines[0];
+
+    relsText.cy(firstLine.cy);
+
+    //update left angle dimensions, now we know where the midpoint is
     var firstRelTbox = firstLine.children()[0].tbox();
-    leftAngle.plot([[firstRelTbox.x - 5, firstLine.cy + angleHeight/2],
-                    [firstRelTbox.x - 5 - angleWidth, firstLine.cy],
-                    [firstRelTbox.x - 5, firstLine.cy - angleHeight/2]]).fill('none').stroke('black');
+    leftAngle.plot([
+        [firstRelTbox.x - 5, firstLine.cy + angleHeight/2],
+        [firstRelTbox.x - 5 - angleWidth, firstLine.cy],
+        [firstRelTbox.x - 5, firstLine.cy - angleHeight/2]]).fill('none').stroke('black');
 
     //Add right angle bracket
     var lastLine = relLines[relLines.length - 1];
     var lastLineTbox = lastLine.tbox();
-    var rightAngle = relList.polyline([[lastLineTbox.x2 + 5, lastLine.cy + angleHeight/2],
-                                       [lastLineTbox.x2 + 5 + angleWidth, lastLine.cy],
-                                       [lastLineTbox.x2 + 5, lastLine.cy - angleHeight/2]]).fill('none').stroke('black');
+    var rightAngle = relList.polyline([
+        [lastLineTbox.x2 + 5, lastLine.cy + angleHeight/2],
+        [lastLineTbox.x2 + 5 + angleWidth, lastLine.cy],
+        [lastLineTbox.x2 + 5, lastLine.cy - angleHeight/2]]).fill('none').stroke('black');
+
     drawSquareBrackets(container, xGap, 5, 5);
     
     // SET 2: render constraints
 
+    container.transform({x:xGap});
     var finalBbox = container.tbox();
     svg.size(finalBbox.width + 10*xGap, finalBbox.height + 2*yGap);
 
