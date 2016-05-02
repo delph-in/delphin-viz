@@ -1,135 +1,170 @@
 var MRSVALS = ['LTOP', 'INDEX', 'RELS', 'HCONS'];
-var RELVALS = ['label', 'ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
+var RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
 var HCONSVALS = ['HARG', 'LARG'];
 
 
 // Magic pixel numbers
 var MAXWIDTH = 500;     // width before a list of elements is wrapped 
 var xGap = 10;          // horizontal gap between elements
-var yGap = 20;          // vertical gap between elements
+var yGap = 5;          // vertical gap between elements
 var bracketYPad = 5;    // distance bracket extents above/below box
 var bracketXWidth = 5;  // width of right-angle corner thing 
 var angleHeight = 50;   // Height of angle brackets
 var angleWidth = xGap;  // Width of angle brackets
-
-/* Functions to create for better abstraction: 
-
-function drawFeatureStructure(name, SVGobject)
--- takes an SVG object and draws brackets around it and applies name of FT
+var featNameXGap = 80;
 
 
-function drawList(name, items, parent, itemFunc)
--- takes a list of feature structures eg relations or hcons
--- draws the key,value pair attaching to parent by
--- using itemFunc to call drawFeatureStructure appropriately for each item
 
-// need to use a closure to wrap up SVGobject?
-function drawHon(hcon) {
- drawFeatureStructure(name, SVGobject)
-}
+// maybe refactor to use some kind of function factory that
+// produces feature structure objects with localised CURRYs?
+// or do I really not need to worry about this?
 
 
-drawFeatureValue(name, value)
 
-Should handle:
-value being type -- string (unexpanded variable or atomic val)
-                 -- list of elements
-                 -- variable that should be expanded to full feature structure
-*/
-
-
-function drawFeatureValue(name, value, parent) {
-    var text = parent.plain(name);
-
-}
+var CURRY;
 
 function drawMrs(mrsData, element) {
     var svg = SVG(element);
     var mrs = svg.group();
     var container = mrs.group();
-    
+    var thisFeatVal;
+    CURRY = bracketYPad;
     // TODO: parameterise the way the yoffset is threaded through
     // then apply this mode of layout to the individual feature structures
     
-    // also, the first offset is just guessing the size of the label?
-    // I think this means that the label creation should be pushed
-    // back to being done inline, ie move out of drawfeaturesturctute
-    var label = container.plain('mrs').move(0, bracketYPad).attr({'font-style':'italic'});    
-    var ltopText = container.plain('LTOP').move(0, bracketYPad + 30);
-    var indexText = container.plain('INDEX').move(0, bracketYPad + 50);
-    var relsText = container.plain('RELS');
 
-    // Start rendering rels
-    var relLines = [];
+    drawFeatStructType(container, 'mrs');
+    drawFeatValPair(container, 'LTOP', mrsData.top);
+    drawFeatValPair(container, 'INDEX', mrsData.index);    
+    drawFeatValPair(container, 'RELS', mrsData.relations); 
 
-    var relList = container.group();
+    //TODO need to update CURRY to the appropriate result after a list
+    // actually, possibly all it needs done is an extra yGap
+
+    // nope; discrepency is because I transform by the height of the line
+    // for intermediate list lines. need to resolve how I do this. choose one!
+
+    drawFeatValPair(container, 'HCONS', mrsData.constraints); 
+    drawSquareBrackets(mrs, xGap);
+    
+    // Left bracket is currently outside the viewport of the SVG canvas
+    // possibly also the top bit of brackets. possibly can remove the y transform
+    mrs.transform({x:xGap, y:bracketYPad});
+    
+    var finalBbox = container.tbox();
+    // TODO: set these dimensions more intelligently
+    svg.size(finalBbox.width + 10*xGap, finalBbox.height + 20);
+
+    return svg.node;
+}
+
+
+function drawFeatStructType(parent, name) {
+    var text = parent.plain(name).y(CURRY).attr({'font-style':'italic'});    
+    CURRY += text.tbox().height + yGap;
+    return text;
+}
+
+
+function drawFeatValPair(parent, name, value) {
+    var group = parent.group();
+    if (typeof value === 'string' || value instanceof String) {
+        // value is a variable
+        var featText = group.plain(name).y(CURRY);
+        var featVal = group.plain(value).move(featNameXGap, CURRY).attr({class:'variable'});
+    } else if (Object.prototype.toString.call(value) === '[object Array]'){
+        // value is a list
+        if (name == 'RELS')
+            var itemFunc = relFeatStruct;
+        else if (name == 'HCONS')
+            var itemFunc = hconsFeatStruct;
+
+        var featText = group.plain(name);
+        var lines = drawList(group, value, itemFunc);
+        featText.cy(lines[0].cy);
+    }
+    CURRY += group.tbox().height + yGap;
+    return group;
+}
+
+
+function relFeatStruct(parent, rel) {
+    var pred = rel['predicate'] +'⟨'+rel.lnk.from+':'+rel.lnk.to+'⟩';
+    drawFeatStructType(parent, pred);
+    drawFeatValPair(parent, 'LBL', rel['label']);
+    for (var j=0; j < RELVALS.length; j++) {        
+        var attr = RELVALS[j];
+        if (rel[attr]) {
+            console.log(CURRY);
+            drawFeatValPair(parent, attr, rel[attr]);
+        }
+    }
+}
+
+
+function hconsFeatStruct(parent, hcon) {
+    drawFeatStructType(parent, hcon.relation);
+    drawFeatValPair(parent, 'HARG', hcon.high);
+    drawFeatValPair(parent, 'LARG', hcon.low);
+}
+
+
+function drawList(parent, itemsData, itemFunc) {
+    var lines = [];   // The list may need to be broken up into multiple lines 
+    var list = parent.group();
     
     // for positioning rels
-    var startX = 100;
+    var startX = featNameXGap + bracketXWidth;
+    var startY = CURRY + 20;  // magic offset
 
     var currX = startX;
-    var currY = 70;
-
+    var currY = startY;
+    
     // currY is a but fuzzy; should be caluclated
     // using largest value of rels from the first list
     // perhaps I could change the way the center y is determined later on
-    // 
     
     
     //Add left angle bracket
-    var leftAngle = relList.polyline();
+    var leftAngle = list.polyline();
 
-    var relLine = relList.group();
+    var line = list.group();
+
+    // TODO some variable names to change in here
+
+    // TODO pass an anonymous function to apply to each element of list
+    // rather than combine logic for all different elements in the one place
 
     // draw all the rels
-    for (var i=0; i < mrsData.relations.length; i++) {       
-        var rel = mrsData.relations[i];
-        var relGroup = relLine.group();
-        
-        // all the text rows for a rel
-        var pred = rel['predicate'] +'⟨'+rel.lnk.from+':'+rel.lnk.to+'⟩';
-        var predText = relGroup.plain(pred).y(bracketYPad);
-        var relY = 25;
-        for (var j=0; j < RELVALS.length; j++) {        
-            var attr = RELVALS[j];
-            if (rel[attr]) {
-                if (attr == 'label') 
-                    var featName = 'LBL';
-                else
-                    var featName = attr;
-
-                var text = relGroup.plain(featName).y(relY);
-                var val = relGroup.plain(rel[attr]).move(70, relY).attr({class:'variable'});
-            relY += 20;
-            }
-        }
-
-
+    for (var i=0; i < itemsData.length; i++) {       
+        CURRY = 0;  // new rell should start at the local current Y
+        var rel = itemsData[i];
+        var relGroup = line.group();
+        itemFunc(relGroup, rel);
         drawSquareBrackets(relGroup, 5);
         relGroup.transform({x:currX, y:currY}); 
 
-
         // update rel positions 
-        if ( i == mrsData.relations.length -1) {
+        if (i == itemsData.length - 1) {
             // we're done with rels
             break;
         } else if (currX >= MAXWIDTH) {
             // Starting a new line of rels
             currX = startX;
-            currY += relLine.tbox().height + yGap;
-            relLines.push(relLine);
-            relLine = relList.group();
+            currY += line.tbox().height + yGap;
+            lines.push(line);
+            line = list.group();
         } else {
             // move along by last relGroup width
             currX += relGroup.tbox().width + 2*xGap;
         }
             
     }
-    relLines.push(relLine);
+    lines.push(line);
     
     //vertically align the rels in each line
-    for (var i=0; i < relLines.length; i++) {
-        var thisLine = relLines[i];
+    for (var i=0; i < lines.length; i++) {
+        var thisLine = lines[i];
         thisLine.cy = thisLine.tbox().cy;
         
         var rels = thisLine.children();
@@ -148,10 +183,7 @@ function drawMrs(mrsData, element) {
     // remove trailing comma
     comma.remove();
 
-    var firstLine = relLines[0];
-
-    // Vertically align feature name with list
-    relsText.cy(firstLine.cy);
+    var firstLine = lines[0];
 
     //update left angle dimensions, now we know where the midpoint is
     var firstRelTbox = firstLine.children()[0].tbox();
@@ -161,23 +193,15 @@ function drawMrs(mrsData, element) {
         [firstRelTbox.x - bracketXWidth, firstLine.cy - angleHeight/2]]).fill('none').stroke('black');
 
     //Add right angle bracket
-    var lastLine = relLines[relLines.length - 1];
+    var lastLine = lines[lines.length - 1];
     var lastLineTbox = lastLine.tbox();
-    var rightAngle = relList.polyline([
+    var rightAngle = line.polyline([
         [lastLineTbox.x2 + bracketXWidth, lastLine.cy + angleHeight/2],
         [lastLineTbox.x2 + bracketXWidth + angleWidth, lastLine.cy],
         [lastLineTbox.x2 + bracketXWidth, lastLine.cy - angleHeight/2]]).fill('none').stroke('black');
 
-    drawSquareBrackets(mrs, xGap);
-    
-    // Left bracket is currently outside the viewport of the SVG canvas
-    mrs.transform({x:xGap, y:bracketYPad});
-    
-    var finalBbox = container.tbox();
-    // TODO: set these dimensions more intelligently
-    svg.size(finalBbox.width + 10*xGap, finalBbox.height + 2*yGap);
-
-    return svg.node;
+    CURRY += yGap;
+    return lines;
 }
 
 
