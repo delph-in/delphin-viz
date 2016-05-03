@@ -34,7 +34,7 @@ function drawMrs(mrsData, element) {
 
     CURRY = 0;
     drawFeatStructType(container, 'mrs');
-    drawFeatValPair(container, 'LTOP', mrsData.top);
+    drawFeatValPair(container, 'LTOP', mrsData.top, mrsData.variables);
     drawFeatValPair(container, 'INDEX', mrsData.index);    
     drawFeatValPair(container, 'RELS', mrsData.relations); 
     drawFeatValPair(container, 'HCONS', mrsData.constraints); 
@@ -49,6 +49,7 @@ function drawMrs(mrsData, element) {
     // TODO: set these dimensions more intelligently
     svg.size(finalBbox.width + 10*xGap, finalBbox.height + 20);
 
+    addHandlers(svg.node)
     return svg.node;
 }
 
@@ -66,7 +67,11 @@ function drawFeatValPair(parent, name, value) {
     if (typeof value === 'string' || value instanceof String) {
         // value is a variable
         var featText = group.plain(name).y(CURRY);
-        var featVal = group.plain(value).move(featNameXGap, CURRY).attr({class:'variable'});
+        var featVal = group.plain(value).move(featNameXGap, CURRY).attr({
+            class: 'variable',
+            'data-var': value  
+            
+        });
     } else if (Object.prototype.toString.call(value) === '[object Array]'){
         // value is a list
         if (name == 'RELS')
@@ -202,4 +207,20 @@ function drawSquareBrackets(element, xpad) {
     element.line(tbox.x2+xpad, tbox.y-bracketYPad, tbox.x2+xpad, tbox.y2+bracketYPad).stroke({width:1});
     element.line(tbox.x2+xpad-bracketXWidth, tbox.y-bracketYPad, tbox.x2+xpad, tbox.y-bracketYPad).stroke({width:1});
     element.line(tbox.x2+xpad-bracketXWidth, tbox.y2+bracketYPad, tbox.x2+xpad, tbox.y2+bracketYPad).stroke({width:1});
+}
+
+function addHandlers(node){
+    $(node).find('.variable').hover(
+        function (event){
+            var dataQuery = "[data-var='" + $(this).data('var') + "']";
+            $(node).find(dataQuery).css({fill: 'red'}); 
+        }
+        ,
+        function (event){
+            var dataQuery = "[data-var='" + $(this).data('var') + "']";
+            $(node).find(dataQuery).css({fill: 'black'}); 
+        }
+    );
+
+
 }
