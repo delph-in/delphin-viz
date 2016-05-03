@@ -1,12 +1,11 @@
-var MRSVALS = ['LTOP', 'INDEX', 'RELS', 'HCONS'];
 var RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
-var HCONSVALS = ['HARG', 'LARG'];
 
 
 // Magic pixel numbers
 var MAXWIDTH = 500;     // width before a list of elements is wrapped 
 var xGap = 10;          // horizontal gap between elements
-var yGap = 5;          // vertical gap between elements
+var yGap = 5;           // vertical gap between 1-line features 
+var yGapStruct = 10;    // vertical gap between full feature structures
 var bracketYPad = 5;    // distance bracket extents above/below box
 var bracketXWidth = 5;  // width of right-angle corner thing 
 var angleHeight = 50;   // Height of angle brackets
@@ -14,36 +13,30 @@ var angleWidth = xGap;  // Width of angle brackets
 var featNameXGap = 80;
 
 
-
-// maybe refactor to use some kind of function factory that
-// produces feature structure objects with localised CURRYs?
-// or do I really not need to worry about this?
-
-
-
+// Global offset for keeping track of where next thing needs to be drawn on the
+// Y axis.
 var CURRY;
+
+/* 
+
+TODO:
+    * why is hcons list off by a couple of pixels
+    * variable properties
+    * make all globals uppercase
+
+*/
+
 
 function drawMrs(mrsData, element) {
     var svg = SVG(element);
     var mrs = svg.group();
     var container = mrs.group();
-    var thisFeatVal;
-    CURRY = bracketYPad;
-    // TODO: parameterise the way the yoffset is threaded through
-    // then apply this mode of layout to the individual feature structures
-    
 
+    CURRY = 0;
     drawFeatStructType(container, 'mrs');
     drawFeatValPair(container, 'LTOP', mrsData.top);
     drawFeatValPair(container, 'INDEX', mrsData.index);    
     drawFeatValPair(container, 'RELS', mrsData.relations); 
-
-    //TODO need to update CURRY to the appropriate result after a list
-    // actually, possibly all it needs done is an extra yGap
-
-    // nope; discrepency is because I transform by the height of the line
-    // for intermediate list lines. need to resolve how I do this. choose one!
-
     drawFeatValPair(container, 'HCONS', mrsData.constraints); 
     drawSquareBrackets(mrs, xGap);
     
@@ -52,6 +45,7 @@ function drawMrs(mrsData, element) {
     mrs.transform({x:xGap, y:bracketYPad});
     
     var finalBbox = container.tbox();
+
     // TODO: set these dimensions more intelligently
     svg.size(finalBbox.width + 10*xGap, finalBbox.height + 20);
 
@@ -61,13 +55,14 @@ function drawMrs(mrsData, element) {
 
 function drawFeatStructType(parent, name) {
     var text = parent.plain(name).y(CURRY).attr({'font-style':'italic'});    
-    CURRY += text.tbox().height + yGap;
+    CURRY += text.tbox().height;
     return text;
 }
 
 
 function drawFeatValPair(parent, name, value) {
     var group = parent.group();
+
     if (typeof value === 'string' || value instanceof String) {
         // value is a variable
         var featText = group.plain(name).y(CURRY);
@@ -80,10 +75,17 @@ function drawFeatValPair(parent, name, value) {
             var itemFunc = hconsFeatStruct;
 
         var featText = group.plain(name);
-        var lines = drawList(group, value, itemFunc);
-        featText.cy(lines[0].cy);
+        var list = drawList(group, value, itemFunc);
+        var firstLine = list.select('g').first();
+        featText.cy(firstLine.tbox().cy);
+
+        // transform the group to make space 
+        var diff = group.previous().tbox().y2 - list.tbox().y;
+        if (diff > 0)
+            group.transform({y:diff + yGapStruct});
     }
-    CURRY += group.tbox().height + yGap;
+
+    CURRY += group.tbox().height;
     return group;
 }
 
@@ -95,7 +97,6 @@ function relFeatStruct(parent, rel) {
     for (var j=0; j < RELVALS.length; j++) {        
         var attr = RELVALS[j];
         if (rel[attr]) {
-            console.log(CURRY);
             drawFeatValPair(parent, attr, rel[attr]);
         }
     }
@@ -111,72 +112,54 @@ function hconsFeatStruct(parent, hcon) {
 
 function drawList(parent, itemsData, itemFunc) {
     var lines = [];   // The list may need to be broken up into multiple lines 
-    var list = parent.group();
-    
-    // for positioning rels
     var startX = featNameXGap + bracketXWidth;
-    var startY = CURRY + 20;  // magic offset
-
     var currX = startX;
-    var currY = startY;
+    var currY = 0;
     
-    // currY is a but fuzzy; should be caluclated
-    // using largest value of rels from the first list
-    // perhaps I could change the way the center y is determined later on
-    
-    
-    //Add left angle bracket
+    var list = parent.group();     
     var leftAngle = list.polyline();
-
     var line = list.group();
 
-    // TODO some variable names to change in here
-
-    // TODO pass an anonymous function to apply to each element of list
-    // rather than combine logic for all different elements in the one place
-
-    // draw all the rels
+    // draw all the items. note that x and y coordinates for item drawing are
+    // relative to the parent group containing the whole list
     for (var i=0; i < itemsData.length; i++) {       
-        CURRY = 0;  // new rell should start at the local current Y
-        var rel = itemsData[i];
-        var relGroup = line.group();
-        itemFunc(relGroup, rel);
-        drawSquareBrackets(relGroup, 5);
-        relGroup.transform({x:currX, y:currY}); 
+        CURRY = 0;  // new item should start at the local current Y
+        var itemGroup = line.group();
+        itemFunc(itemGroup, itemsData[i]);
+        drawSquareBrackets(itemGroup, 5);
+        itemGroup.transform({x:currX, y:currY}); 
 
-        // update rel positions 
+        // update item offsets
         if (i == itemsData.length - 1) {
-            // we're done with rels
+            // we're done with items
             break;
         } else if (currX >= MAXWIDTH) {
             // Starting a new line of rels
             currX = startX;
-            currY += line.tbox().height + yGap;
+            currY += line.tbox().height + yGapStruct;
             lines.push(line);
             line = list.group();
         } else {
-            // move along by last relGroup width
-            currX += relGroup.tbox().width + 2*xGap;
+            // move along by last itemGroup width
+            currX += itemGroup.tbox().width + 2*xGap;
         }
             
     }
     lines.push(line);
     
-    //vertically align the rels in each line
+    //vertically align the items in each line
     for (var i=0; i < lines.length; i++) {
         var thisLine = lines[i];
         thisLine.cy = thisLine.tbox().cy;
-        
-        var rels = thisLine.children();
+        var items = thisLine.children();
 
-        for (var j=0; j < rels.length; j++) {
-            var rel = rels[j];
-            
-            // align the rel vertically
-            rel.cy(thisLine.cy);
-            // add comma after the
-            var tbox2 = rel.tbox();
-            var comma = rel.plain(',').center(tbox2.width, tbox2.height/2);
+        for (var j=0; j < items.length; j++) {
+            // align each item vertically and add vertically aligned comma.
+            // need to account for negative y values using bracketYPad
+            var item = items[j];          
+            item.cy(thisLine.cy + bracketYPad);
+            var tbox = item.tbox();
+            var comma = item.plain(',').center(tbox.width, -bracketYPad + tbox.height/2);
         }
     }
 
@@ -200,22 +183,7 @@ function drawList(parent, itemsData, itemFunc) {
         [lastLineTbox.x2 + bracketXWidth + angleWidth, lastLine.cy],
         [lastLineTbox.x2 + bracketXWidth, lastLine.cy - angleHeight/2]]).fill('none').stroke('black');
 
-    CURRY += yGap;
-    return lines;
-}
-
-
-function drawFeatureStructure(name, svgObject, xpad){
-    //Adds the feature structure name to top
-    var label = svgObject.plain(name).move(0,bracketYPad).attr({'font-style':'italic'});
-
-
-    // Shift contents down to make space for label 
-    //debugger
-    //svgObject.first().transform({y:label.tbox().height + bracketYPad});
-
-    // Draw brackets around it
-    drawSquareBrackets(svgObject, xpad);
+    return list;
 }
 
 
