@@ -1,9 +1,7 @@
 /* 
 
 TODO:
-    * why is hcons list off by a couple of pixels
-    * variable properties
-    * make all globals uppercase
+    * why is hcons list off by a couple of pixels?
 */
 
 
@@ -234,12 +232,12 @@ function MRS(parentElement, mrsData){
             return type == 'e' || type == 'x'; 
         }).tooltip({
             track: true,
-            tooltipClass: 'variable-info',
+            tooltipClass: 'mrs-variable-info',
             content: function(){
                 var varname = $(this).data('var');
                 var variable = mrsData.variables[varname];
                 var features = variable.type == 'e' ? EVAR : XVAR;  
-                var divs = ['<div class="variable-info">'];
+                var divs = [];
 
                 for (var i=0; i < features.length; i++) {        
                     var attr = features[i];
@@ -248,7 +246,6 @@ function MRS(parentElement, mrsData){
                     }
                 }
 
-                divs.push('</div>');
                 return divs.join('');
             }
         });

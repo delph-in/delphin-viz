@@ -37,21 +37,6 @@
     margin-top: 2em;
 }
 
-/* tooltips */
-
-.ui-tooltip {
-    border-radius: 5px;
-    background-color: rgba(255,255,255,0.9);
-	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
-	padding: .3em;
-	position: absolute;
-	z-index: 9999;
-}
-
-.ui-helper-hidden-accessible {
-    display: none;
-}
-
 .result {
     display: table-row;
 }
@@ -107,7 +92,28 @@
 }
 
 
-/*MRS -- will need to move this elsewhere */
+/* Tree tooltips. If these get used, they will need to be moved into 
+ * separat tree module.
+*/
+
+.ui-tooltip.tree-node-info {
+    border-radius: 5px;
+    background-color: rgba(255,255,255,0.9);
+	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+	padding: .3em;
+	position: absolute;
+	z-index: 9999;
+}
+
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
+
+/* MRS -- will need to move this into MRS module somehow 
+   One issue is that there will need to be the appropriate tooltip
+   classes 
+*/
 
 .variable:hover {
     cursor: pointer;
@@ -121,3 +127,17 @@
 .variable-feat-val {
     display: inline-block;
 }
+
+.ui-tooltip.mrs-variable-info {
+    border-radius: 5px;
+    background-color: rgba(255,255,255,0.9);
+	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+	padding: .3em;
+	position: absolute;
+	z-index: 9999;
+}
+
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
