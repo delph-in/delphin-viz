@@ -1,76 +1,60 @@
-var RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
-
-
-// Magic pixel numbers
-var MAXWIDTH = 500;     // width before a list of elements is wrapped 
-var xGap = 10;          // horizontal gap between elements
-var yGap = 5;           // vertical gap between 1-line features 
-var yGapStruct = 10;    // vertical gap between full feature structures
-var bracketYPad = 5;    // distance bracket extents above/below box
-var bracketXWidth = 5;  // width of right-angle corner thing 
-var angleHeight = 50;   // Height of angle brackets
-var angleWidth = xGap;  // Width of angle brackets
-var featNameXGap = 80;
-
-
-// Global offset for keeping track of where next thing needs to be drawn on the
-// Y axis.
-var CURRY;
-
 /* 
 
 TODO:
     * why is hcons list off by a couple of pixels
     * variable properties
     * make all globals uppercase
-
 */
 
 
 function MRS(parentElement, mrsData){
-    var MAXWIDTH = 500;     // width before a list of elements is wrapped 
-    var xGap = 10;          // horizontal gap between elements
-    var yGap = 5;           // vertical gap between 1-line features 
-    var yGapStruct = 10;    // vertical gap between full feature structures
-    var bracketYPad = 5;    // distance bracket extents above/below box
-    var bracketXWidth = 5;  // width of right-angle corner thing 
-    var angleHeight = 50;   // Height of angle brackets
-    var angleWidth = xGap;  // Width of angle brackets
-    var featNameXGap = 80;
+    // Constant pixel sizes used
+    const MAXWIDTH = 500;     // width before a list of elements is wrapped 
+    const XGAP = 10;          // horizontal gap between elements
+    const YGAP = 5;           // vertical gap between 1-line features 
+    const YGAPSTRUCT = 10;    // vertical gap between full feature structures
+    const BRACKETYPAD = 5;    // distance bracket extents above/below box
+    const BRACKETXWIDTH = 5;  // width of right-angle corner thing 
+    const ANGLEHEIGHT = 50;   // Height of angle brackets
+    const ANGLEWIDTH = XGAP;  // Width of angle brackets
+    const FEATNAMEXGAP = 80;
+
+    // canonical ordering for MRS features
+    const RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
 
     // Global offset for keeping track of where next thing needs to be drawn on the
     // Y axis.
-    var CURRY = 0;
+    var CURRENTY = 0;
 
     function drawMrs(parent) {
         var svg = SVG(parent);
         var mrs = svg.group();
         var container = mrs.group();
 
-        CURRY = 0;
+        CURRENTY = 0;
         drawFeatStructType(container, 'mrs');
         drawFeatValPair(container, 'LTOP', mrsData.top);
         drawFeatValPair(container, 'INDEX', mrsData.index);    
         drawFeatValPair(container, 'RELS', mrsData.relations); 
         drawFeatValPair(container, 'HCONS', mrsData.constraints); 
-        drawSquareBrackets(mrs, xGap);
+        drawSquareBrackets(mrs, XGAP);
         
         // Left bracket is currently outside the viewport of the SVG canvas
         // possibly also the top bit of brackets. possibly can remove the y transform
-        mrs.transform({x:xGap, y:bracketYPad});
+        mrs.transform({x:XGAP, y:BRACKETYPAD});
         
         var finalBbox = container.tbox();
 
         // TODO: set these dimensions more intelligently
-        svg.size(finalBbox.width + 10*xGap, finalBbox.height + 20);
+        svg.size(finalBbox.width + 10*XGAP, finalBbox.height + 20);
 
         addHandlers(svg.node, mrsData);
         return svg.node;
     }
 
     function drawFeatStructType(parent, name) {
-        var text = parent.plain(name).y(CURRY).attr({'font-style':'italic'});    
-        CURRY += text.tbox().height;
+        var text = parent.plain(name).y(CURRENTY).attr({'font-style':'italic'});    
+        CURRENTY += text.tbox().height;
         return text;
     }
 
@@ -79,8 +63,8 @@ function MRS(parentElement, mrsData){
 
         if (typeof value === 'string' || value instanceof String) {
             // value is a variable
-            var featText = group.plain(name).y(CURRY);
-            var featVal = group.plain(value).move(featNameXGap, CURRY).attr({
+            var featText = group.plain(name).y(CURRENTY);
+            var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr({
                 class: 'variable',
                 'data-var': value,
                 title: value
@@ -100,10 +84,10 @@ function MRS(parentElement, mrsData){
             // transform the group to make space 
             var diff = group.previous().tbox().y2 - list.tbox().y;
             if (diff > 0)
-                group.transform({y:diff + yGapStruct});
+                group.transform({y:diff + YGAPSTRUCT});
         }
 
-        CURRY += group.tbox().height;
+        CURRENTY += group.tbox().height;
         return group;
     }
 
@@ -127,7 +111,7 @@ function MRS(parentElement, mrsData){
 
     function drawList(parent, itemsData, itemFunc) {
         var lines = [];   // The list may need to be broken up into multiple lines 
-        var startX = featNameXGap + bracketXWidth;
+        var startX = FEATNAMEXGAP + BRACKETXWIDTH;
         var currX = startX;
         var currY = 0;
         
@@ -138,8 +122,9 @@ function MRS(parentElement, mrsData){
         // draw all the items. note that x and y coordinates for item drawing are
         // relative to the parent group containing the whole list
         for (var i=0; i < itemsData.length; i++) {       
-            CURRY = 0;  // new item should start at the local current Y
+            CURRENTY = 0;  
             var itemGroup = line.group();
+
             itemFunc(itemGroup, itemsData[i]);
             drawSquareBrackets(itemGroup, 5);
             itemGroup.transform({x:currX, y:currY}); 
@@ -149,14 +134,14 @@ function MRS(parentElement, mrsData){
                 // we're done with items
                 break;
             } else if (currX >= MAXWIDTH) {
-                // Starting a new line of rels
+                // Starting a new line of items
                 currX = startX;
-                currY += line.tbox().height + yGapStruct;
+                currY += line.tbox().height + YGAPSTRUCT;
                 lines.push(line);
                 line = list.group();
             } else {
                 // move along by last itemGroup width
-                currX += itemGroup.tbox().width + 2*xGap;
+                currX += itemGroup.tbox().width + 2*XGAP;
             }
             
         }
@@ -170,11 +155,11 @@ function MRS(parentElement, mrsData){
 
             for (var j=0; j < items.length; j++) {
                 // align each item vertically and add vertically aligned comma.
-                // need to account for negative y values using bracketYPad
+                // need to account for negative y values using BRACKETYPAD
                 var item = items[j];          
-                item.cy(thisLine.cy + bracketYPad);
+                item.cy(thisLine.cy + BRACKETYPAD);
                 var tbox = item.tbox();
-                var comma = item.plain(',').center(tbox.width, -bracketYPad + tbox.height/2);
+                var comma = item.plain(',').center(tbox.width, -BRACKETYPAD + tbox.height/2);
             }
         }
 
@@ -186,17 +171,17 @@ function MRS(parentElement, mrsData){
         //update left angle dimensions, now we know where the midpoint is
         var firstRelTbox = firstLine.children()[0].tbox();
         leftAngle.plot([
-            [firstRelTbox.x - bracketXWidth, firstLine.cy + angleHeight/2],
-            [firstRelTbox.x - bracketXWidth - angleWidth, firstLine.cy],
-            [firstRelTbox.x - bracketXWidth, firstLine.cy - angleHeight/2]]).fill('none').stroke('black');
+            [firstRelTbox.x - BRACKETXWIDTH, firstLine.cy + ANGLEHEIGHT/2],
+            [firstRelTbox.x - BRACKETXWIDTH - ANGLEWIDTH, firstLine.cy],
+            [firstRelTbox.x - BRACKETXWIDTH, firstLine.cy - ANGLEHEIGHT/2]]).fill('none').stroke('black');
 
         //Add right angle bracket
         var lastLine = lines[lines.length - 1];
         var lastLineTbox = lastLine.tbox();
         var rightAngle = line.polyline([
-            [lastLineTbox.x2 + bracketXWidth, lastLine.cy + angleHeight/2],
-            [lastLineTbox.x2 + bracketXWidth + angleWidth, lastLine.cy],
-            [lastLineTbox.x2 + bracketXWidth, lastLine.cy - angleHeight/2]]).fill('none').stroke('black');
+            [lastLineTbox.x2 + BRACKETXWIDTH, lastLine.cy + ANGLEHEIGHT/2],
+            [lastLineTbox.x2 + BRACKETXWIDTH + ANGLEWIDTH, lastLine.cy],
+            [lastLineTbox.x2 + BRACKETXWIDTH, lastLine.cy - ANGLEHEIGHT/2]]).fill('none').stroke('black');
 
         return list;
     }
@@ -208,20 +193,20 @@ function MRS(parentElement, mrsData){
         var tbox = element.tbox(); 
         
         // left vertical line; top right angle; bottom right angle
-        element.line(tbox.x-xpad, tbox.y-bracketYPad, tbox.x-xpad,
-                     tbox.y2+bracketYPad).stroke({width:1});
-        element.line(tbox.x-xpad, tbox.y-bracketYPad, tbox.x-xpad+bracketXWidth,
-                     tbox.y-bracketYPad).stroke({width:1});
-        element.line(tbox.x-xpad, tbox.y2+bracketYPad, tbox.x-xpad+bracketXWidth,
-                     tbox.y2+bracketYPad).stroke({width:1});
+        element.line(tbox.x-xpad, tbox.y-BRACKETYPAD, tbox.x-xpad,
+                     tbox.y2+BRACKETYPAD).stroke({width:1});
+        element.line(tbox.x-xpad, tbox.y-BRACKETYPAD, tbox.x-xpad+BRACKETXWIDTH,
+                     tbox.y-BRACKETYPAD).stroke({width:1});
+        element.line(tbox.x-xpad, tbox.y2+BRACKETYPAD, tbox.x-xpad+BRACKETXWIDTH,
+                     tbox.y2+BRACKETYPAD).stroke({width:1});
         
         // left vertical line; top right angle; bottom right angle
-        element.line(tbox.x2+xpad, tbox.y-bracketYPad, tbox.x2+xpad,
-                     tbox.y2+bracketYPad).stroke({width:1});
-        element.line(tbox.x2+xpad-bracketXWidth, tbox.y-bracketYPad, tbox.x2+xpad,
-                     tbox.y-bracketYPad).stroke({width:1});
-        element.line(tbox.x2+xpad-bracketXWidth, tbox.y2+bracketYPad, tbox.x2+xpad,
-                     tbox.y2+bracketYPad).stroke({width:1});
+        element.line(tbox.x2+xpad, tbox.y-BRACKETYPAD, tbox.x2+xpad,
+                     tbox.y2+BRACKETYPAD).stroke({width:1});
+        element.line(tbox.x2+xpad-BRACKETXWIDTH, tbox.y-BRACKETYPAD, tbox.x2+xpad,
+                     tbox.y-BRACKETYPAD).stroke({width:1});
+        element.line(tbox.x2+xpad-BRACKETXWIDTH, tbox.y2+BRACKETYPAD, tbox.x2+xpad,
+                     tbox.y2+BRACKETYPAD).stroke({width:1});
     }
 
     function addHandlers(node){
@@ -250,14 +235,12 @@ function MRS(parentElement, mrsData){
     }
 
     var self = {
-        data: mrsData,
         parent: parentElement,
-        element: drawMrs(parentElement)
+        data: mrsData,
     };
 
+    self.element = drawMrs(parentElement) 
     addHandlers(self.element);
 
-    // Maybe just return the element?
-    // but this way we can add dynamic functions later
     return self;
 }

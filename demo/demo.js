@@ -6,10 +6,8 @@
    -- node tooltips with identifiers/types; need to resolve strategy 
    
    mrs.js
-   -- finish basic representation
-   -- add variable highlighting
-   -- add span highlighting
    -- variable information 
+   -- add span highlighting
  
    Workout strategy for tooltips. Options:
    JavaScript (element used will be appended to the DOM)
