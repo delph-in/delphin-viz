@@ -21,6 +21,8 @@ function MRS(parentElement, mrsData){
 
     // canonical ordering for MRS features
     const RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
+    const XVAR = ['PERS', 'NUM', 'IND'];
+    const EVAR = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];    
 
     // Global offset for keeping track of where next thing needs to be drawn on the
     // Y axis.
@@ -225,21 +227,39 @@ function MRS(parentElement, mrsData){
                 var dataQuery = "[data-var='" + $(this).data('var') + "']";
                 $(node).find(dataQuery).css({fill: 'black'}); 
             }
-        ).tooltip({
+        ).filter(function (){
+            // only draw tooltip for variables of type e and x 
+            var varname = $(this).data('var');
+            var type = mrsData.variables[varname].type;
+            return type == 'e' || type == 'x'; 
+        }).tooltip({
             track: true,
             tooltipClass: 'variable-info',
             content: function(){
-                return $(this).data('var');
+                var varname = $(this).data('var');
+                var variable = mrsData.variables[varname];
+                var features = variable.type == 'e' ? EVAR : XVAR;  
+                var divs = ['<div class="variable-info">'];
+
+                for (var i=0; i < features.length; i++) {        
+                    var attr = features[i];
+                    if (variable[attr]) {
+                        divs.push('<div><div class="variable-feat-name">'+attr+'</div><div class="variable-feat-val">'+variable[attr]+'</div></div>');
+                    }
+                }
+
+                divs.push('</div>');
+                return divs.join('');
             }
         });
     }
 
     var self = {
         parent: parentElement,
-        data: mrsData,
+        data: mrsData
     };
 
-    self.element = drawMrs(parentElement) 
+    self.element = drawMrs(parentElement);
     addHandlers(self.element);
 
     return self;

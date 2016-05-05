@@ -106,3 +106,18 @@
     cursor: pointer;
 }
 
+
+/*MRS -- will need to move this elsewhere */
+
+.variable:hover {
+    cursor: pointer;
+}
+
+.variable-feat-name {
+    display: inline-block;
+    width: 5em;
+}
+
+.variable-feat-val {
+    display: inline-block;
+}
