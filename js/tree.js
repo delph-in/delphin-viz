@@ -21,7 +21,7 @@ var DAUGHTER_HSPACE = 20;
 var DAUGHTER_VSPACE = 30;
 
 
-function drawTree(derivation, element) {
+function drawTree(element, derivation) {
     // need to add the SVG to the DOM before rendering, otherwise the height of
     // SVG elements won't be available during rendering.
     var svg = svgelement('svg');

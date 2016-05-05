@@ -77,8 +77,6 @@ function Result(result, parent) {
         data : result,
         num : resultNum,
         element: $result[0],
-        drawTree : drawTree,
-        drawMrs : drawMrs,
         saveViz : function(){},
         saveVizSvg : function(vizType) {
             var svgData = self[vizType].outerHTML;
@@ -125,12 +123,12 @@ function Result(result, parent) {
     // Add data structures as per the available data
     if (self.data.derivation) {
         var $viz = $(Templates.viz({vizType:'tree'})).appendTo($inner);
-        self.tree = self.drawTree(self.data.derivation, $viz[0]);
+        self.tree = drawTree($viz[0], self.data.derivation);
     }
     
     if (self.data.mrs) {
         var $viz = $(Templates.viz({vizType:'mrs'})).appendTo($inner);
-        self.mrs = self.drawMrs(self.data.mrs, $viz[0]);
+        self.mrs = MRS($viz[0], self.data.mrs);
     }
 
     //Add various event bindings to things in the visualisations
