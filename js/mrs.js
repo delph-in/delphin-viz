@@ -1,7 +1,9 @@
 /* 
 
 TODO:
+    * highlight span of original text
     * why is hcons list off by a couple of pixels?
+    * set final SVG dimensions more intelligently
 */
 
 
@@ -46,7 +48,7 @@ function MRS(parentElement, mrsData){
         var finalBbox = container.tbox();
 
         // TODO: set these dimensions more intelligently
-        svg.size(finalBbox.width + 10*XGAP, finalBbox.height + 20);
+        svg.size(finalBbox.width + 5*XGAP, finalBbox.height + 20);
 
         addHandlers(svg.node, mrsData);
         return svg.node;

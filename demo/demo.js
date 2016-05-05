@@ -1,22 +1,28 @@
 /* TODO
-   tree.js
-   -- switch to using svg.js
-   -- short labels when available
-   -- incorporate types when available
-
    General: 
    -- need to work out unified strategy for tooltips across all visualisations
       Maybe jQuery UI?
    -- need to work out strategy for CSS across visualisations
       either separate CSS files or shared CSS files
-   
+   -- think about how the visualisations interact with embedded page. 
+      ie how does MRS locate the input text to highlight it. 
+      Maybe have set of standardised IDs that the user can choose to create divs with
+
+   tree.js
+   -- switch to using svg.js
+   -- short labels when available
+   -- incorporate types when available
+
+  demo.html
+   -- input text follows scrolling down the page?
+
  */
 
 var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
 
 // Renders pre-fetched ERG call so don't need to keep hitting the delph-in server
 // during development.
-var DEV_MODE = true;
+var DEV_MODE = false;
 
 
 // Using underscore.js/lodash.js  Templates
