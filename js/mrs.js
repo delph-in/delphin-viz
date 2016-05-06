@@ -20,7 +20,7 @@ function MRS(parentElement, mrsData){
     const FEATNAMEXGAP = 80;
 
     // canonical ordering for MRS features
-    const RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RESTR', 'BODY'];
+    const RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RSTR', 'BODY'];
     const XVAR = ['PERS', 'NUM', 'IND'];
     const EVAR = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];    
 
