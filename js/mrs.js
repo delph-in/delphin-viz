@@ -8,8 +8,8 @@ TODO:
 
 function MRS(parentElement, mrsData){
     // Constant pixel sizes used
-    const MAXWIDTH = 500;     // width before a list of elements is wrapped 
-    const XGAP = 10;          // horizontal gap between elements
+    const MAXWIDTH = 600;     // width before a list of elements is wrapped 
+    const XGAP = 5;          // horizontal gap between elements
     const YGAP = 5;           // vertical gap between 1-line features 
     const YGAPSTRUCT = 10;    // vertical gap between full feature structures
     const BRACKETYPAD = 5;    // distance bracket extents above/below box
@@ -48,7 +48,7 @@ function MRS(parentElement, mrsData){
         // update the dimensions of the final SVG to match those of the now
         // rendered MRS
         var finalBbox = mrs.tbox();
-        svg.size(finalBbox.width, finalBbox.height);
+        svg.size(finalBbox.width+5, finalBbox.height+5);
         return svg.node;
     }
 
@@ -167,7 +167,7 @@ function MRS(parentElement, mrsData){
                 var item = items[j];          
                 item.cy(thisLine.cy + BRACKETYPAD);
                 var tbox = item.tbox();
-                var comma = item.plain(',').center(tbox.width, -BRACKETYPAD + tbox.height/2);
+                var comma = item.plain(',').center(tbox.width-1, -BRACKETYPAD + tbox.height/2);
             }
         }
 
