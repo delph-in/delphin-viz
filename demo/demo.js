@@ -1,31 +1,15 @@
-/* TODO
-   General: 
-   -- need to work out unified strategy for tooltips across all visualisations
-      Maybe jQuery UI?
-   -- need to work out strategy for CSS across visualisations
-      either separate CSS files or shared CSS files
-   -- think about how the visualisations interact with embedded page. 
-      ie how does MRS locate the input text to highlight it. 
-      Maybe have set of standardised IDs that the user can choose to create divs with
+/* 
 
-   tree.js
-   -- switch to using svg.js
-   -- short labels when available
-   -- incorporate types when available
-
-  demo.html
-   -- input text follows scrolling down the page?
+TODO:
+   * input text follows scrolling down the page?
 
  */
 
+
 var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
 
-// Renders pre-fetched ERG call so don't need to keep hitting the delph-in server
-// during development.
-var DEV_MODE = true;
 
-
-// Using underscore.js/lodash.js  Templates
+// Using underscore.js/lodash.js Templates
 var Templates = {};
 
 Templates.result = [
@@ -164,7 +148,21 @@ function triggerDownload (imgURI, filename) {
 }
 
 
-function doResults(data){
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable)
+            return pair[1];
+    }
+    
+    return false;
+}
+
+
+function doResults(data) {
     // Update the status 
     $(Templates.successStatus({
         'input': data.input,
@@ -203,7 +201,7 @@ $(document).ready(function(){
         });
     });
 
-    if (DEV_MODE) {
+    if (getQueryVariable('dev') == 'true') {
         $.getJSON("elephant.json", function(data) {
             doResults(data);
         });
