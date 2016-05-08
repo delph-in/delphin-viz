@@ -1,5 +1,3 @@
-.hidden {display: none}
-
 #header {
 
 }
@@ -62,6 +60,11 @@
     margin: 1em;
 }
 
+
+/* Styling for the save icons -- needs to be moved into the visualisations.  */
+
+.hidden {display: none}
+
 .tools {
     position: absolute;
     right: 0;
@@ -75,10 +78,6 @@
     width: 24px;
 }
 
-/* TODO: positionings aren't going to be great cross-browsers
-   Probably should change it to be two display-inline divs 
- */
-
 .save div {
     display: inline-block;
     vertical-align: middle;
@@ -91,60 +90,3 @@
     cursor: pointer;
 }
 
-
-/* Tree tooltips. If these get used, they will need to be moved into 
- * separat tree module.
-*/
-
-.ui-tooltip.tree-node-info {
-    border-radius: 5px;
-    background-color: rgba(255,255,255,0.9);
-	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
-	padding: .3em;
-	position: absolute;
-	z-index: 9999;
-}
-
-.ui-helper-hidden-accessible {
-    display: none;
-}
-
-
-/* MRS -- will need to move this into MRS module somehow 
-   One issue is that there will need to be the appropriate tooltip
-   classes 
-*/
-
-.highlighted {
-    color: red;
-}
-
-.variable:hover {
-    cursor: pointer;
-}
-
-.variable-feat-name {
-    display: inline-block;
-    width: 5em;
-}
-
-.variable-feat-val {
-    display: inline-block;
-}
-
-.ui-tooltip.mrs-variable-info {
-    border-radius: 5px;
-    background-color: rgba(255,255,255,0.9);
-	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
-	padding: .3em;
-	position: absolute;
-	z-index: 9999;
-}
-
-.ui-helper-hidden-accessible {
-    display: none;
-}
-
-.mrs {
-    font-size: .9em;
-}
