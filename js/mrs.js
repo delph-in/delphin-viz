@@ -1,8 +1,8 @@
 /* 
 
 TODO:
+    * ICONS
     * why is hcons list off by a couple of pixels?
-    * set final SVG dimensions more intelligently
 */
 
 
@@ -24,8 +24,8 @@ function MRS(parentElement, mrsData){
     const XVAR = ['PERS', 'NUM', 'PT', 'IND'];
     const EVAR = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];    
 
-    // Global offset for keeping track of where next thing needs to be drawn on the
-    // Y axis.
+    // Global offset for keeping track of where next thing needs to be drawn on
+    // the Y axis.
     var CURRENTY = 0;
 
     function drawMrs(parent) {
@@ -41,14 +41,14 @@ function MRS(parentElement, mrsData){
         drawFeatValPair(container, 'HCONS', mrsData.constraints); 
         drawSquareBrackets(mrs, XGAP);
         
-        // Left bracket is currently outside the viewport of the SVG canvas
-        // possibly also the top bit of brackets. possibly can remove the y transform
+        // transform the MRS to take into account the square brackets drawn at
+        // negative coordinates
         mrs.transform({x:XGAP, y:BRACKETYPAD});
         
-        var finalBbox = container.tbox();
-
-        // TODO: set these dimensions more intelligently
-        svg.size(finalBbox.width + 5*XGAP, finalBbox.height + 20);
+        // update the dimensions of the final SVG to match those of the now
+        // rendered MRS
+        var finalBbox = mrs.tbox();
+        svg.size(finalBbox.width, finalBbox.height);
         return svg.node;
     }
 
