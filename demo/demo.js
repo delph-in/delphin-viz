@@ -22,7 +22,7 @@ var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
 
 // Renders pre-fetched ERG call so don't need to keep hitting the delph-in server
 // during development.
-var DEV_MODE = false;
+var DEV_MODE = true;
 
 
 // Using underscore.js/lodash.js  Templates
@@ -59,6 +59,7 @@ for (var template in Templates) {
     }
 }
 
+var RESULTLIST = [];
 
 function Result(result, parent) {
     var resultNum = result['result-id'] + 1;
@@ -164,20 +165,19 @@ function triggerDownload (imgURI, filename) {
 
 
 function doResults(data){
-    var results = data.results;
-
     // Update the status 
     $(Templates.successStatus({
         'input': data.input,
         'readings': data.readings,
-        'numResults': results.length}))
+        'numResults': data.results.length}))
         .appendTo($('#results-info').empty());
     
     //Create and add the results
     var parent = $('#results-container').empty()[0];
     
-    for (var i=0; i < results.length; i++) {
-        var result = Result(results[i], parent);
+    for (var i=0; i < data.results.length; i++) {
+        var result = Result(data.results[i], parent);
+        RESULTLIST.push(result);
     }
 }
 
@@ -195,7 +195,7 @@ $(document).ready(function(){
                 'results': $('#input-results').val()
             },
             success: function(data){
-                doResults(data);
+                doResults(data);  
             },
             error: function(data){
                 alert("Error");

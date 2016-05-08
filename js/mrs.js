@@ -1,7 +1,6 @@
 /* 
 
 TODO:
-    * highlight span of original text
     * why is hcons list off by a couple of pixels?
     * set final SVG dimensions more intelligently
 */
@@ -19,9 +18,10 @@ function MRS(parentElement, mrsData){
     const ANGLEWIDTH = XGAP;  // Width of angle brackets
     const FEATNAMEXGAP = 80;
 
-    // canonical ordering for MRS features
+    // canonical ordering for MRS features. TODO: fix approach so features
+    // omitted from this list are not silently ignored.
     const RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RSTR', 'BODY'];
-    const XVAR = ['PERS', 'NUM', 'IND'];
+    const XVAR = ['PERS', 'NUM', 'PT', 'IND'];
     const EVAR = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];    
 
     // Global offset for keeping track of where next thing needs to be drawn on the
@@ -49,8 +49,6 @@ function MRS(parentElement, mrsData){
 
         // TODO: set these dimensions more intelligently
         svg.size(finalBbox.width + 5*XGAP, finalBbox.height + 20);
-
-        addHandlers(svg.node, mrsData);
         return svg.node;
     }
 
@@ -66,11 +64,19 @@ function MRS(parentElement, mrsData){
         if (typeof value === 'string' || value instanceof String) {
             // value is a variable
             var featText = group.plain(name).y(CURRENTY);
-            var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr({
+
+            var varAttrs = {
                 class: 'variable',
                 'data-var': value,
                 title: value
-            });
+            };
+
+            if (self.argZeroes[value]) {
+                varAttrs['data-to'] = self.argZeroes[value].to;
+                varAttrs['data-from'] = self.argZeroes[value].from;
+            }
+
+            var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr(varAttrs);
         } else if (Object.prototype.toString.call(value) === '[object Array]'){
             // value is a list
             if (name == 'RELS')
@@ -215,29 +221,51 @@ function MRS(parentElement, mrsData){
         // Will need to do something different if we wan to highlight things in
         // different visualisations
 
-        // Possibly set up some kind of interface whereby set of class names agreed
-        // to be used by every viz for things that might want to be highlighted.
+        // Possibly set up some kind of interface whereby set of class names/IDs
+        // agreed to be used by every viz for things that might want to be
+        // highlighted.
         $(node).find('.variable').hover(
             function (event){
-                var dataQuery = "[data-var='" + $(this).data('var') + "']";
+                event.stopPropagation();
+                var $this = $(this);
+
+                // highlight variables
+                var dataQuery = "[data-var='" + $this.data('var') + "']";
                 $(node).find(dataQuery).css({fill: 'red'}); 
+
+                // highlight input text span if variable has link data
+                var from = $this.data('from');
+                var to = $this.data('to');
+                if (from != null && to != null) {
+                    var $inputElem = $('#text-input');
+                    var inputText = $inputElem.html();
+                    var left = inputText.slice(0, from);
+                    var middle = inputText.slice(from, to);
+                    var right = inputText.slice(to, inputText.length);
+                    $inputElem.html(left+'<span class="highlighted">'+middle+'</span>'+right);
+                }
             }
             ,
             function (event){
+                // remove highlighted variables 
                 var dataQuery = "[data-var='" + $(this).data('var') + "']";
                 $(node).find(dataQuery).css({fill: 'black'}); 
+                
+                // reset highlighted input string
+                var $inputElem = $('#text-input');
+                $inputElem.html($inputElem.html().replace(/<\/?span[^>]*>/g,""));
             }
         ).filter(function (){
             // only draw tooltip for variables of type e and x 
-            var varname = $(this).data('var');
-            var type = mrsData.variables[varname].type;
+            var varName = $(this).data('var');
+            var type = mrsData.variables[varName].type;
             return type == 'e' || type == 'x'; 
         }).tooltip({
             track: true,
             tooltipClass: 'mrs-variable-info',
             content: function(){
-                var varname = $(this).data('var');
-                var variable = mrsData.variables[varname];
+                var varName = $(this).data('var');
+                var variable = mrsData.variables[varName];
                 var features = variable.type == 'e' ? EVAR : XVAR;  
                 var divs = [];
 
@@ -253,11 +281,22 @@ function MRS(parentElement, mrsData){
         });
     }
 
+    function getArgZeroLinks(){
+        argZeroLinks = {};
+        
+        for (var i=0; i < mrsData.relations.length; i++) {        
+            var rel = mrsData.relations[i];
+            argZeroLinks[rel.ARG0] = rel.lnk;
+        }
+        return argZeroLinks;
+    }
+    
     var self = {
         parent: parentElement,
         data: mrsData
     };
 
+    self.argZeroes = getArgZeroLinks();
     self.element = drawMrs(parentElement);
     addHandlers(self.element);
 

@@ -115,6 +115,10 @@
    classes 
 */
 
+.highlighted {
+    color: red;
+}
+
 .variable:hover {
     cursor: pointer;
 }
