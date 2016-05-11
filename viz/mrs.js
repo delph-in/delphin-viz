@@ -2,6 +2,7 @@
 
 TODO:
     * ICONS
+    * fix feature rendering to not ordering missing features from canonical ordering
     * why is hcons list off by a couple of pixels?
 */
 
