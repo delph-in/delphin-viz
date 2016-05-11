@@ -39,4 +39,4 @@ Dependencies (not including tree.js and mrs.js dependencies):
 [svg.js]: http://svgjs.com/
 [jQuery]: https://jquery.com/
 [jQuery UI]: https://jqueryui.com/
-[demo]: http://ned2.github.io/delphin-viz/demo/
+[demo]: http://delph-in.github.io/delphin-viz/demo/
