@@ -7,7 +7,9 @@ for derivation trees and vanilla MRS.
 
 ## Visualizations
 
-All visualisations currently target SVG. 
+All visualisations currently target SVG. The current aim is to gradually
+converge on using D3.js as the preferred rendering library and sole dependency,
+however this won't be a strict requirement.
 
 ### tree.js
 
