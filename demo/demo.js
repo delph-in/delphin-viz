@@ -192,6 +192,9 @@ $(document).ready(function(){
                 'input': $('#input-text').val(),
                 'results': $('#input-results').val()
             },
+            dataFilter: function(data) {
+                return data.replace(/([^,]) "pedges"/, '$1, "pedges"');
+            },
             success: function(data){
                 doResults(data);  
             },
@@ -202,7 +205,7 @@ $(document).ready(function(){
     });
 
     if (getQueryVariable('dev') == 'true') {
-        $.getJSON("elephant.json", function(data) {
+        $.getJSON("elephant2.json", function(data) {
             doResults(data);
         });
     }

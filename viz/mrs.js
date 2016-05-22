@@ -2,8 +2,7 @@
 
 TODO:
     * ICONS
-    * fix feature rendering to not ordering missing features from canonical ordering
-    * why is hcons list off by a couple of pixels?
+    * fix feature rendering to not exclude missing features from canonical ordering
 */
 
 
@@ -106,8 +105,8 @@ function MRS(parentElement, mrsData){
         drawFeatValPair(parent, 'LBL', rel['label']);
         for (var j=0; j < RELVALS.length; j++) {        
             var attr = RELVALS[j];
-            if (rel[attr]) {
-                drawFeatValPair(parent, attr, rel[attr]);
+            if (rel.arguments[attr]) {
+                drawFeatValPair(parent, attr, rel.arguments[attr]);
             }
         }
     }
@@ -257,10 +256,12 @@ function MRS(parentElement, mrsData){
                 $inputElem.html($inputElem.html().replace(/<\/?span[^>]*>/g,""));
             }
         ).filter(function (){
-            // only draw tooltip for variables of type e and x 
+            // only draw tooltip for variables of type e and x probably should
+            // be doing the test against whether corresponding mrs variable
+            // object has "properties" field or not.
             var varName = $(this).data('var');
-            var type = mrsData.variables[varName].type;
-            return type == 'e' || type == 'x'; 
+            return mrsData.variables[varName].hasOwnProperty("properties");
+            //return type == 'e' || type == 'x'; 
         }).tooltip({
             track: true,
             tooltipClass: 'mrs-variable-info',
@@ -272,8 +273,8 @@ function MRS(parentElement, mrsData){
 
                 for (var i=0; i < features.length; i++) {        
                     var attr = features[i];
-                    if (variable[attr]) {
-                        divs.push('<div><div class="variable-feat-name">'+attr+'</div><div class="variable-feat-val">'+variable[attr]+'</div></div>');
+                    if (variable.properties[attr]) {
+                        divs.push('<div><div class="variable-feat-name">'+attr+'</div><div class="variable-feat-val">'+variable.properties[attr]+'</div></div>');
                     }
                 }
 
