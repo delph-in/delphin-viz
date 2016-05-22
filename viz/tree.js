@@ -55,26 +55,25 @@ function render_tree(svg, tree) {
 		wtot += daughters[x].mywidth;
 	}
 
-	var g = svgelement("g");
-
+    var lexical;
 	if(daughters.length) {
-        var lexical = false;
 		dtr_label_mean /= daughters.length;
-	    var g = svgelement("g");
-	    var n = text(svg, tree.entity);
-        n.setAttributeNS(null, "title", tree.entity);
-
     } else {
-        var lexical = true;
-		var g = render_yield(svg, tree.form);
-	    var n = text(svg, tree.form);
-        n.setAttributeNS(null, "title", tree.form);
-	    g.appendChild(n);
-	    g.mywidth = n.bbx.width;
-
-        wtot = n.bbx.width;
+        lexical = render_yield(svg, tree.form);
+		wtot = lexical.mywidth;
 		dtr_label_mean = wtot / 2;
 	}
+
+    var node_str;
+    if (tree.hasOwnProperty("label"))
+        node_str = tree.label;
+    else
+        node_str = tree.entity;
+    
+	var g = svgelement("g");
+	var n = text(svg, node_str);
+    n.setAttributeNS(null, "title", tree.entity);
+	g.appendChild(n);
 
 	var daughters_wtot = wtot;
 	var nw = n.bbx.width;
@@ -94,7 +93,6 @@ function render_tree(svg, tree) {
 
 	n.setAttributeNS(null, "x", labelcenter - nw / 2);
 	n.setAttributeNS(null, "y", nh * 2/3);
-	g.appendChild(n);
 
 	var	dtr_x = wtot / 2 - daughters_wtot / 2;
 	var ytrans = nh + DAUGHTER_VSPACE;
@@ -102,8 +100,10 @@ function render_tree(svg, tree) {
 	if(lexical) {
         var tvalue = "translate(" + dtr_x + "," + ytrans + ")";
         var yline = nh + DAUGHTER_VSPACE - 1;
-		g.setAttributeNS(null, "transform", tvalue);
-        g.setAttributeNS(null, "class", "leaf");
+		lexical.setAttributeNS(null, "transform", tvalue);
+        lexical.setAttributeNS(null, "class", "leaf");
+		g.appendChild(line(labelcenter, nh, wtot/2, yline));
+		g.appendChild(lexical);
 	} else {
 	    for(var i=0; i < daughters.length; i++) {
             var daughter = daughters[i];

@@ -288,7 +288,7 @@ function MRS(parentElement, mrsData){
         
         for (var i=0; i < mrsData.relations.length; i++) {        
             var rel = mrsData.relations[i];
-            argZeroLinks[rel.ARG0] = rel.lnk;
+            argZeroLinks[rel.arguments.ARG0] = rel.lnk;
         }
         return argZeroLinks;
     }
