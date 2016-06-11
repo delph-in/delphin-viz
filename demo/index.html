@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset=utf-8 />
-        <title>ERG Demo</title>
+        <title>delphin-viz Demo</title>
         <link rel="stylesheet" type="text/css" media="screen" href="demo.css"/>
         <link rel="stylesheet" type="text/css" media="screen" href="../viz/delphin-viz.css"/>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
@@ -16,15 +16,22 @@
     <body>
         <div id="container">
             <div id="input-container">
-                <p>A tool for visualising parse trees produced by <a href="http://www.delph-in.net/erg/">The
-                   LinGO English Resource Grammar</a> (ERG). Targets the developmental <a href="http://moin.delph-in.net/ErgApi">ERG API</a>.
-                   Source code can be found on <a href="https://github.com/ned2/delphin-viz">GitHub</a>.</p>
+                <p>A tool for visualising parse trees produced by <a href="http://www.delph-in.net/">DELPH-IN</a> grammars.
+                   Targets the developmental <a href="http://moin.delph-in.net/ErgApi">API</a>.
+                   The source code can be found on <a href="https://github.com/ned2/delphin-viz">GitHub</a>.</p>
                 <form action="#" method="post" onsubmit="return false;">
                     <div class="input-line">
                         <input id="input-text" type="text" value="Try pressing return in this window!">
                         <input id="input-submit" type="submit" value="Parse">
                     </div>
                     <div class="input-line">
+                        Grammar:
+                        <select id="input-grammar">
+                            <option value="erg-uio">ERG (UIO)</option>
+                            <option value="erg-uw">ERG (UW)</option>
+                            <option value="jacy-uw">Jacy (UW)</option>
+                            <option value="indra-uw">Indra (UW)</option>
+                        </select>
                         Results:
                         <select id="input-results">
                             <option value="1">1</option>

@@ -2,12 +2,21 @@
 
 TODO:
    * input text follows scrolling down the page?
-
  */
 
 
-var ERG_URL = 'http://erg.delph-in.net/rest/0.9/parse';
+var RESOURCES = {
+    'erg-uio': 'http://erg.delph-in.net/rest/0.9/parse',
+    'erg-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
+    'jacy-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
+    'indra-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse'
+};
 
+var SAMPLE_INPUT = {
+    erg: 'Abrams barks.',
+    jacy: '犬 が 吠える',
+    indra: 'anjing menggonggong.'
+};
 
 // Using underscore.js/lodash.js Templates
 var Templates = {};
@@ -184,7 +193,7 @@ $(document).ready(function(){
 
     $('#input-submit').click(function(event) {
         $.ajax({
-            url: ERG_URL,
+            url: RESOURCES[$('#input-grammar')[0].value],
             dataType: 'json',
             data: {
                 'derivation': 'json',
@@ -204,8 +213,14 @@ $(document).ready(function(){
         });
     });
 
+    $('#input-grammar').change(function(event){
+        // Change the sample text to appropriate language
+        var grammarPrefix = $(this).val().split('-')[0];
+        $('#input-text').val(SAMPLE_INPUT[grammarPrefix]);
+    });
+
     if (getQueryVariable('dev') == 'true') {
-        $.getJSON("elephant2.json", function(data) {
+        $.getJSON("elephant.json", function(data) {
             doResults(data);
         });
     }
