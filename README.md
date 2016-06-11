@@ -2,8 +2,8 @@
 
 A library of JavaScript micro-tools for in-browser rendering of DELPH-IN data
 structure visualizations. Targets the developmental
-[ERG API](http://moin.delph-in.net/ErgApi). Currently contains visualizations
-for derivation trees and vanilla MRS.
+[DELPH-IN API](http://moin.delph-in.net/ErgApi). Currently contains
+visualizations for derivation trees and vanilla MRS.
 
 ## Visualizations
 
