@@ -103,11 +103,12 @@ function MRS(parentElement, mrsData){
         var pred = rel['predicate'] +'⟨'+rel.lnk.from+':'+rel.lnk.to+'⟩';
         drawFeatStructType(parent, pred);
         drawFeatValPair(parent, 'LBL', rel['label']);
-        for (var j=0; j < RELVALS.length; j++) {        
-            var attr = RELVALS[j];
-            if (rel.arguments[attr]) {
-                drawFeatValPair(parent, attr, rel.arguments[attr]);
-            }
+
+        var args = Object.keys(rel.arguments).sort(rargcompare);
+        
+        for (var j=0; j < args.length; j++) {        
+            var arg = args[j];
+            drawFeatValPair(parent, arg, rel.arguments[arg]);
         }
     }
 
@@ -217,6 +218,46 @@ function MRS(parentElement, mrsData){
                      tbox.y2+BRACKETYPAD).stroke({width:1});
     }
 
+    function rargcompare(a, b) {
+        var a = a.toUpperCase();
+        var b = b.toUpperCase();
+        if (a === 'BODY' || a === 'CARG' || a.substr(-4) === 'HNDL') {
+            return 1;
+        } else if (b === 'BODY' || b === 'CARG' || b.substr(-4) === 'HNDL') {
+            return -1;
+        } else {
+            return a > b;
+        }
+    }
+
+    function xArgKey(arg) {
+        var arg = arg.toUpperCase();
+        var xvar = ['PERS', 'NUM', 'PT', 'IND'];
+        var index = xvar.indexOf(arg);
+        return index > 0 ? index: 9999; 
+    }
+    
+    function eArgKey(arg) {
+        var arg = arg.toUpperCase();
+        var evar = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];
+        var index = evar.indexOf(arg);
+        return index > 0 ? index: 9999; 
+    }
+
+    function keySort(array, func){
+        var mapped = array.map(function(el, i){
+            return {index: i, value: func(el)};
+        });
+
+        mapped.sort(function(a, b) {
+            return +(a.value < b.value) || +(a.value === b.value) - 1;
+        });
+        
+        return mapped.map(function(el){
+            return array[el.index];
+        });
+    }
+
     function addHandlers(node){
         // Will need to do something different if we wan to highlight things in
         // different visualisations
@@ -268,16 +309,14 @@ function MRS(parentElement, mrsData){
             content: function(){
                 var varName = $(this).data('var');
                 var variable = mrsData.variables[varName];
-                var features = variable.type == 'e' ? EVAR : XVAR;  
-                var divs = [];
+                var func = variable.type == 'e' ? eArgKey : xArgKey;
+                var features = keySort(Object.keys(variable.properties), func);
 
+                var divs = [];
                 for (var i=0; i < features.length; i++) {        
                     var attr = features[i];
-                    if (variable.properties[attr]) {
-                        divs.push('<div><div class="variable-feat-name">'+attr+'</div><div class="variable-feat-val">'+variable.properties[attr]+'</div></div>');
-                    }
+                    divs.push('<div><div class="variable-feat-name">'+attr+'</div><div class="variable-feat-val">'+variable.properties[attr]+'</div></div>');
                 }
-
                 return divs.join('');
             }
         });
