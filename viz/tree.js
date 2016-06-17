@@ -73,6 +73,12 @@ function render_tree(svg, tree) {
 	var g = svgelement("g");
 	var n = text(svg, node_str);
     n.setAttributeNS(null, "title", tree.entity);
+
+    // add a title element for node tooltips
+    var title = svgelement('title');
+    title.innerHTML = tree.entity;
+    n.appendChild(title);
+
 	g.appendChild(n);
 
 	var daughters_wtot = wtot;
@@ -115,7 +121,7 @@ function render_tree(svg, tree) {
 		    dtr_x += daughter.mywidth + DAUGHTER_HSPACE;
 	    }
     }
-
+    
 	g.mywidth = wtot;
 	g.labelcenter = labelcenter;
 	g.labelheight = nh;
