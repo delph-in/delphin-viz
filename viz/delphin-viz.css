@@ -1,10 +1,15 @@
 .ui-tooltip {
-    border-radius: 5px;
-    background-color: rgba(180, 180, 180, 1);
+    background: #444;
+    border: 0px;
+    border-radius: 8px;
 	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
-	padding: .3em;
+    font: 12px sans-serif;
+    padding: .3em;
 	position: absolute;
 	z-index: 9999;
+    color: #FFF;
+    opacity: 0.8;
+    pointer-events: none;
 }
 
 .ui-helper-hidden-accessible {
@@ -37,3 +42,113 @@
     display: inline-block;
 }
 
+/* DMRS specific */
+
+.dmrs {
+  display: inline-block;
+  background-color: #FFF;
+  border-radius: 10px;
+  overflow: auto;
+}
+
+.node {
+  pointer-events: all;
+  fill: #000;
+  stroke: none;
+}
+
+.nodeText {
+  stroke: none;
+  font-family: sans-serif;
+  font-size: 16px;
+  text-anchor: middle;
+}
+
+.nodeText:hover {
+  font-weight: bold;
+}
+
+.node.selected {
+  font-weight: bold;    
+}
+
+.nodeBox {
+  stroke-width: 2px;
+  fill: none;
+}
+
+.link {
+  stroke: #000;
+  fill: #000;
+  stroke-opacity: .5;
+  fill-opacity: .5;
+}
+
+.link path {
+  fill: none;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  marker-end: url(#arrowhead);
+}
+
+.link.eq path {
+  fill: none;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  stroke-dasharray: 5,5;
+}
+
+.link.top path {
+  fill: #f00;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  stroke-dasharray: 5,5;
+  marker-end: url(#arrowhead);
+}
+
+.linkend {
+  stroke-opacity: .5;
+  fill-opacity: .5;
+}
+
+.link text.rargname {
+  fill: #000;
+  stroke: none;
+  stroke-width: 1px;
+  font-family: sans-serif;
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.link.top text.rargname {
+  text-anchor: start;
+}
+
+.node.in { fill: red; }
+.node.out { fill: blue; }
+.node.labelset { stroke: gold; }
+.node.scope { stroke: violet; }
+.node.out.labelset { fill: green; stroke: gold;}
+.node.in.labelset { fill: darkorange; stroke: gold;}
+
+.link.in { fill: red; stroke: red; }
+.link.out { fill: blue; stroke: blue; }
+.link.labelset { fill: gold; stroke: gold; }
+.link.scope { fill: violet; stroke: violet; }
+.link.in.labelset { fill: darkorange; stroke: darkorange; }
+.link.out.labelset { fill: green; stroke: green; }
+
+/* thanks: http://bl.ocks.org/d3noob/a22c42db65eb00d4e369 */
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 2px;
+  font: 12px sans-serif;
+  color: #FFF;
+  background: #444;
+  border: 0px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+}
