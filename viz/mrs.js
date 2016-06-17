@@ -1,14 +1,7 @@
-/* 
-
-TODO:
-    * ICONS
-*/
-
-
 function MRS(parentElement, mrsData){
     // Constant pixel sizes used
     const MAXWIDTH = 600;     // width before a list of elements is wrapped 
-    const XGAP = 5;          // horizontal gap between elements
+    const XGAP = 5;           // horizontal gap between elements
     const YGAP = 5;           // vertical gap between 1-line features 
     const YGAPSTRUCT = 10;    // vertical gap between full feature structures
     const BRACKETYPAD = 5;    // distance bracket extents above/below box
@@ -17,18 +10,12 @@ function MRS(parentElement, mrsData){
     const ANGLEWIDTH = XGAP;  // Width of angle brackets
     const FEATNAMEXGAP = 80;
 
-    // canonical ordering for MRS features. TODO: fix approach so features
-    // omitted from this list are not silently ignored.
-    const RELVALS = ['ARG0', 'ARG1', 'ARG2', 'ARG3', 'RSTR', 'BODY'];
-    const XVAR = ['PERS', 'NUM', 'PT', 'IND'];
-    const EVAR = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];    
-
     // Global offset for keeping track of where next thing needs to be drawn on
     // the Y axis.
     var CURRENTY = 0;
 
-    function drawMrs(parent) {
-        var svg = SVG(parent);
+    function drawMrs() {
+        var svg = SVG(parentElement);
         var mrs = svg.group();
         var container = mrs.group();
 
@@ -61,21 +48,22 @@ function MRS(parentElement, mrsData){
         var group = parent.group();
 
         if (typeof value === 'string' || value instanceof String) {
-            // value is a variable
+            // value is a string 
             var featText = group.plain(name).y(CURRENTY);
+            var attrs = {title: value};
 
-            var varAttrs = {
-                class: 'variable',
-                'data-var': value,
-                title: value
-            };
+            if (name != 'CARG'){
+                // If it's not 'CARG' then it's a variable
+                attrs['class'] = 'variable';
+                attrs['data-var'] = value;
 
-            if (self.argZeroes[value]) {
-                varAttrs['data-to'] = self.argZeroes[value].to;
-                varAttrs['data-from'] = self.argZeroes[value].from;
+                if (argZeroes[value]) {
+                    attrs['data-to'] = argZeroes[value].to;
+                    attrs['data-from'] = argZeroes[value].from;
+                }
             }
 
-            var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr(varAttrs);
+            var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr(attrs);
         } else if (Object.prototype.toString.call(value) === '[object Array]'){
             // value is a list
             if (name == 'RELS')
@@ -335,15 +323,15 @@ function MRS(parentElement, mrsData){
         }
         return argZeroLinks;
     }
+
+    var argZeroes = getArgZeroLinks();
     
     var self = {
         parent: parentElement,
-        data: mrsData
+        data: mrsData,
+        element: drawMrs()
     };
 
-    self.argZeroes = getArgZeroLinks();
-    self.element = drawMrs(parentElement);
     addHandlers(self.element);
-
     return self;
 }
