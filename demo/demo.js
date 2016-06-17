@@ -61,7 +61,7 @@ function Result(result, parent) {
         element: $result[0],
         saveViz : function(){},
         saveVizSvg : function(vizType) {
-            var svgData = self[vizType].outerHTML;
+            var svgData = self[vizType].element.outerHTML;
             var svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
             var DOMURL = window.URL || window.webkitURL || window;
             var url = DOMURL.createObjectURL(svgBlob);
@@ -69,7 +69,7 @@ function Result(result, parent) {
         },
         saveVizPng : function(vizType) {
             // Save SVG to a canvas
-            var svg = self[vizType];
+            var svg = self[vizType].element;
             var canvas = $('<canvas>')[0];
             var ctx = canvas.getContext('2d');
             var bbox = svg.getBBox();
@@ -105,7 +105,7 @@ function Result(result, parent) {
     // Add data structures as per the available data
     if (self.data.derivation) {
         var $viz = $(Templates.viz({vizType:'tree'})).appendTo($inner);
-        self.tree = drawTree($viz[0], self.data.derivation);
+        self.tree = {element: drawTree($viz[0], self.data.derivation)};
     }
     
     if (self.data.mrs) {

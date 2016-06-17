@@ -323,13 +323,15 @@ function DMRS(parentElement, dmrs) {
               .attr("y", function(d) { return d.midpoint.y * (-1 * d.dir) - 3; })
               .text(function(d) { return d.rargname + "/" + d.post; } );
     //  });
+        return svg[0][0];
     }
 
     var self = {
         parent: parentElement,
-        data: dmrsData
+        data: dmrsData,
+        element: drawDmrs()
     };
-    drawDmrs();
+
 
     return self;
 }
