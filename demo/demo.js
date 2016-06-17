@@ -1,10 +1,3 @@
-/* 
-
-TODO:
-   * input text follows scrolling down the page?
- */
-
-
 var RESOURCES = {
     'erg-uio': 'http://erg.delph-in.net/rest/0.9/parse',
     'erg-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
@@ -13,10 +6,11 @@ var RESOURCES = {
 };
 
 var SAMPLE_INPUT = {
-    erg: 'Abrams barks.',
+    erg: 'Abrams knew that it rained.',
     jacy: '犬 が 吠える',
     indra: 'anjing menggonggong.'
 };
+
 
 // Using underscore.js/lodash.js Templates
 var Templates = {};
@@ -202,8 +196,8 @@ $(document).ready(function(){
             dataType: 'json',
             data: {
                 'derivation': 'json',
-                'mrs': $('#input-mrs').prop('checked') ? 'json' : null,
-                'dmrs': $('#input-dmrs').prop('checked') ? 'json' : null,
+                'mrs': $('#input-mrs').prop('checked') ? 'json' : "null",
+                'dmrs': $('#input-dmrs').prop('checked') ? 'json' : "null",
                 'input': $('#input-text').val(),
                 'results': $('#input-results').val()
             },
