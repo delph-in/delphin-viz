@@ -213,6 +213,9 @@ function DMRS(parentElement, dmrs) {
           var svg = d3.select(parentElement)
             .classed("dmrs", true)
             .append('svg')
+            .attr('xmlns', 'http://www.w3.org/2000/svg')
+            .attr('version', '1.1')
+            .attr('xmlns:link', 'http://www.w3.org/1999/xlink')
             .attr("height", ((dmrs.maxTopLevel - dmrs.maxBottomLevel + 3) * level_dy));
           var g = svg.append("svg:g")
               .attr("transform", "translate(0," + ((dmrs.maxTopLevel + 2) * level_dy) + ")");
