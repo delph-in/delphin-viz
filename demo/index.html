@@ -5,13 +5,15 @@
         <title>delphin-viz Demo</title>
         <link rel="stylesheet" type="text/css" media="screen" href="demo.css"/>
         <link rel="stylesheet" type="text/css" media="screen" href="../viz/delphin-viz.css"/>
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.3.0/svg.min.js"></script>
+        <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="demo.js"></script>
         <script type="text/javascript" src="../viz/tree.js"></script>
         <script type="text/javascript" src="../viz/mrs.js"></script>
+        <script type="text/javascript" src="../viz/dmrs.js"></script>
     </head>
     <body>
         <div id="container">
@@ -43,6 +45,8 @@
                         </select>
                         MRS
                         <input id="input-mrs" type="checkbox" checked>
+                        DMRS
+                        <input id="input-dmrs" type="checkbox" checked>
                     </div>
                 </form>
             </div>
@@ -50,6 +54,7 @@
 
         <div id="results-info"></div>
         <div id="results-container"></div>
+        <div id="tooltip" class="tooltip"></div>
     </body>
 </html>
     

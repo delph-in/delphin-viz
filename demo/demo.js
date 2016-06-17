@@ -119,6 +119,11 @@ function Result(result, parent) {
         self.mrs = MRS($viz[0], self.data.mrs);
     }
 
+    if (self.data.dmrs) {
+        var $viz = $(Templates.viz({vizType:'dmrs'})).appendTo($inner);
+        self.dmrs = DMRS($viz[0], self.data.dmrs);
+    }
+
     //Add various event bindings to things in the visualisations
     $result.find('.viz').hover(
         function(event) {
@@ -198,6 +203,7 @@ $(document).ready(function(){
             data: {
                 'derivation': 'json',
                 'mrs': $('#input-mrs').prop('checked') ? 'json' : null,
+                'dmrs': $('#input-dmrs').prop('checked') ? 'json' : null,
                 'input': $('#input-text').val(),
                 'results': $('#input-results').val()
             },
