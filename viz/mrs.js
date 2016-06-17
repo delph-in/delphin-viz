@@ -2,7 +2,6 @@
 
 TODO:
     * ICONS
-    * fix feature rendering to not exclude missing features from canonical ordering
 */
 
 
@@ -219,6 +218,7 @@ function MRS(parentElement, mrsData){
     }
 
     function rargcompare(a, b) {
+        // Compare function for sorting rel arguments 
         var a = a.toUpperCase();
         var b = b.toUpperCase();
         if (a === 'BODY' || a === 'CARG' || a.substr(-4) === 'HNDL') {
@@ -231,6 +231,7 @@ function MRS(parentElement, mrsData){
     }
 
     function xArgKey(arg) {
+        // Key function for x variable properties
         var arg = arg.toUpperCase();
         var xvar = ['PERS', 'NUM', 'PT', 'IND'];
         var index = xvar.indexOf(arg);
@@ -238,6 +239,7 @@ function MRS(parentElement, mrsData){
     }
     
     function eArgKey(arg) {
+        // Key function for event variable properties
         var arg = arg.toUpperCase();
         var evar = ['SF', 'TENSE', 'MOOD', 'PROG', 'PERF'];
         var index = evar.indexOf(arg);
@@ -245,6 +247,8 @@ function MRS(parentElement, mrsData){
     }
 
     function keySort(array, func){
+        // Returns a copy of 'array' sorted based on first applying 'func' to
+        // each element
         var mapped = array.map(function(el, i){
             return {index: i, value: func(el)};
         });
