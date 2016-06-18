@@ -8,17 +8,13 @@
 	position: absolute;
 	z-index: 9999;
     color: #FFF;
-    opacity: 0.8;
+    opacity: 0.9;
     pointer-events: none;
 }
 
-.ui-helper-hidden-accessible {
-    display: none;
-}
+.ui-helper-hidden-accessible { display: none}
 
-.highlighted {
-    color: red;
-}
+.highlighted {color: red}
 
 
 
@@ -34,13 +30,10 @@
 }
 
 .variable-feat-name {
-    display: inline-block;
-    width: 5em;
+    width: 60%;
 }
 
-.variable-feat-val {
-    display: inline-block;
-}
+
 
 /* DMRS specific */
 

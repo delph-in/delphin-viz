@@ -106,7 +106,8 @@ function MRS(parentElement, mrsData){
     }
 
     function drawList(parent, itemsData, itemFunc) {
-        var lines = [];   // The list may need to be broken up into multiple lines 
+        // The list may need to be broken up into multiple lines 
+        var lines = [];
         var startX = FEATNAMEXGAP + BRACKETXWIDTH;
         var currX = startX;
         var currY = 0;
@@ -294,7 +295,6 @@ function MRS(parentElement, mrsData){
             // object has "properties" field or not.
             var varName = $(this).data('var');
             return mrsData.variables[varName].hasOwnProperty("properties");
-            //return type == 'e' || type == 'x'; 
         }).tooltip({
             track: true,
             tooltipClass: 'mrs-variable-info',
@@ -304,12 +304,12 @@ function MRS(parentElement, mrsData){
                 var func = variable.type == 'e' ? eArgKey : xArgKey;
                 var features = keySort(Object.keys(variable.properties), func);
 
-                var divs = [];
+                var rows = [];
                 for (var i=0; i < features.length; i++) {        
                     var attr = features[i];
-                    divs.push('<div><div class="variable-feat-name">'+attr+'</div><div class="variable-feat-val">'+variable.properties[attr]+'</div></div>');
+                    rows.push('<tr><td class="variable-feat-name">'+attr+'</td><td class="variable-feat-val">'+variable.properties[attr]+'</td></tr>');
                 }
-                return divs.join('');
+                return '<table>' + rows.join('') + '</table>';
             }
         });
     }
