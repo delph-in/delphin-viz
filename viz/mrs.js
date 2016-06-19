@@ -56,11 +56,6 @@ function MRS(parentElement, mrsData){
                 // If it's not 'CARG' then it's a variable
                 attrs['class'] = 'variable';
                 attrs['data-var'] = value;
-
-                if (argZeroes[value]) {
-                    attrs['data-to'] = argZeroes[value].to;
-                    attrs['data-from'] = argZeroes[value].from;
-                }
             }
 
             var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr(attrs);
@@ -252,12 +247,6 @@ function MRS(parentElement, mrsData){
     }
 
     function addHandlers(node){
-        // Will need to do something different if we wan to highlight things in
-        // different visualisations
-
-        // Possibly set up some kind of interface whereby set of class names/IDs
-        // agreed to be used by every viz for things that might want to be
-        // highlighted.
         $(node).find('.variable').hover(
             function (event){
                 event.stopPropagation();
@@ -267,17 +256,43 @@ function MRS(parentElement, mrsData){
                 var dataQuery = "[data-var='" + $this.data('var') + "']";
                 $(node).find(dataQuery).css({fill: 'red'}); 
 
-                // highlight input text span if variable has link data
-                var from = $this.data('from');
-                var to = $this.data('to');
-                if (from != null && to != null) {
-                    var $inputElem = $('#text-input');
-                    var inputText = $inputElem.html();
-                    var left = inputText.slice(0, from);
-                    var middle = inputText.slice(from, to);
-                    var right = inputText.slice(to, inputText.length);
-                    $inputElem.html(left+'<span class="highlighted">'+middle+'</span>'+right);
+                // highlight input text span if variable has lnk data
+                var lnks = argZeroes[this.innerHTML];
+                if (lnks == undefined)
+                    // no lnks for this variable
+                    return;
+
+                var $inputElem = $('#text-input');
+                var inputText = $inputElem.html();
+                
+                // create an arrary of binary values indicating which characters
+                // should be highlighted
+                var chars = Array.apply(null, Array(inputText.length)).map(function(){return 0});
+                for (var i=0; i < lnks.length; i++) {
+                    for (var j=lnks[i].from; j < lnks[i].to; j++)
+                        chars[j] = 1;
                 }
+
+                // create a list of highlighted or not highlighted tokens
+                // to be joined together and then used to replace the text
+                var tokens = [];
+                var inside = false;
+                var start = 0;
+                for (var c=0; c < chars.length; c++){
+                    var status = chars[c];
+                    var atEnd = (c == chars.length - 1);
+                    var end = atEnd ? c+1 : c;
+                    if (inside && (!status || atEnd)) {
+                        tokens.push('<span class="highlighted">' + inputText.slice(start, end) + '</span>');
+                        inside = false;
+                        start = c;
+                    } else if (!inside && (status || atEnd)) {
+                        tokens.push(inputText.slice(start, end));
+                        inside = true;
+                        start = c;
+                    } 
+                }
+                $inputElem.html(tokens.join(''));                
             }
             ,
             function (event){
@@ -319,7 +334,10 @@ function MRS(parentElement, mrsData){
         
         for (var i=0; i < mrsData.relations.length; i++) {        
             var rel = mrsData.relations[i];
-            argZeroLinks[rel.arguments.ARG0] = rel.lnk;
+            if (argZeroLinks.hasOwnProperty(rel.arguments.ARG0))
+                argZeroLinks[rel.arguments.ARG0].push(rel.lnk);
+            else
+                argZeroLinks[rel.arguments.ARG0] = [rel.lnk];
         }
         return argZeroLinks;
     }
