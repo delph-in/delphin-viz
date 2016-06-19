@@ -188,6 +188,61 @@ function doResults(data) {
 }
 
 
+function updateUrl() {
+    var makeParam = function(param, value) {return param + '=' + value;};
+    var params = [];
+
+    params.push(makeParam('input', $('#input-text').val()));
+    params.push(makeParam('count', $('#input-results').val()));
+    params.push(makeParam('grammar', $('#input-grammar').val()));
+    
+    if ($('#input-tree').prop('checked'));
+        params.push(makeParam('tree', 'true'));
+    if ($('#input-mrs').prop('checked'));
+        params.push(makeParam('mrs', 'true'));
+    if ($('#input-dmrs').prop('checked'));
+        params.push(makeParam('dmrs', 'true'));
+
+    window.location.hash = encodeURI(params.join('&'));
+}
+
+
+function loadUrlParams() {
+    var hash = decodeURI(window.location.hash);
+    var params = hash.replace(/^#/, '').split('&');
+
+    if (params.length === 0 || params[0] === "")
+        return false;
+
+    for (var i=0; i < params.length; i++) {
+        var p = params[i];
+
+        if (p == '')
+            continue;
+
+        var fields = p.split('=');
+        var param = fields[0];
+        var value = fields[1];
+
+        if (param === '' || value === '')
+            continue;
+
+        if (param == 'input')
+            $('#input-text').val(value);
+        else if (param == 'grammar')
+            $('#input-grammar').val(value);
+        else if (param == 'count')
+            $('#input-results').val(value);
+        else if (param == 'tree')
+            $('#input-tree').prop('checked', true);
+        else if (param == 'mrs')
+            $('#input-mrs').prop('checked', true);
+        else if (param == 'dmrs')
+            $('#input-dmrs').prop('checked', true);
+    }
+    return true;
+}
+
 $(document).ready(function(){
 
     $('#input-submit').click(function(event) {
@@ -195,7 +250,7 @@ $(document).ready(function(){
             url: RESOURCES[$('#input-grammar')[0].value],
             dataType: 'json',
             data: {
-                'derivation': 'json',
+                'derivation': $('#input-tree').prop('checked') ? 'json' : "null",
                 'mrs': $('#input-mrs').prop('checked') ? 'json' : "null",
                 'dmrs': $('#input-dmrs').prop('checked') ? 'json' : "null",
                 'input': $('#input-text').val(),
@@ -205,7 +260,8 @@ $(document).ready(function(){
                 return data.replace(/([^,]) "pedges"/, '$1, "pedges"');
             },
             success: function(data){
-                doResults(data);  
+                doResults(data);
+                updateUrl();
             },
             error: function(data){
                 alert("Error");
@@ -219,6 +275,9 @@ $(document).ready(function(){
         $('#input-text').val(SAMPLE_INPUT[grammarPrefix]);
     });
 
+    if (loadUrlParams())
+        $('#input-submit').trigger('click');
+        
     if (getQueryVariable('dev') == 'true') {
         $.getJSON("elephant.json", function(data) {
             doResults(data);
