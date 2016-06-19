@@ -269,10 +269,22 @@ $(document).ready(function(){
         });
     });
 
+
+    $('#input-grammar').on('focusin', function(){
+        $(this).data('prev', $(this).val());
+    });
+
     $('#input-grammar').change(function(event){
         // Change the sample text to appropriate language
-        var grammarPrefix = $(this).val().split('-')[0];
-        $('#input-text').val(SAMPLE_INPUT[grammarPrefix]);
+        var prevGrammar = $(this).data('prev');
+        var thisGrammar = $(this).val();
+        var prevGramPrefix = prevGrammar.split('-')[0];
+        var thisGramPrefix = thisGrammar.split('-')[0];
+
+        if (prevGramPrefix != thisGramPrefix) {
+            $('#input-text').val(SAMPLE_INPUT[thisGramPrefix]);
+            $(this).data('prev', thisGrammar);
+        }
     });
 
     if (loadUrlParams())
