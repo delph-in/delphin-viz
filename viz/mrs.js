@@ -20,8 +20,8 @@ function MRS(parentElement, mrsData){
         var container = mrs.group();
 
         CURRENTY = 0;
-        drawFeatStructType(container, 'mrs');
-        drawFeatValPair(container, 'LTOP', mrsData.top);
+        drawFeatStructType(container, '');
+        drawFeatValPair(container, 'TOP', mrsData.top);
         drawFeatValPair(container, 'INDEX', mrsData.index);    
         drawFeatValPair(container, 'RELS', mrsData.relations); 
         drawFeatValPair(container, 'HCONS', mrsData.constraints); 
@@ -50,7 +50,8 @@ function MRS(parentElement, mrsData){
         if (typeof value === 'string' || value instanceof String) {
             // value is a string 
             var featText = group.plain(name).y(CURRENTY);
-            var attrs = {title: value};
+            var attrs = {'title': value,
+                         'font-style': 'italic'};
 
             if (name != 'CARG'){
                 // If it's not 'CARG' then it's a variable
