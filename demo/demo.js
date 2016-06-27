@@ -201,11 +201,11 @@ function updateUrl() {
     params.push(makeParam('count', $('#input-results').val()));
     params.push(makeParam('grammar', $('#input-grammar').val()));
     
-    if ($('#input-tree').prop('checked'));
+    if ($('#input-tree').prop('checked'))
         params.push(makeParam('tree', 'true'));
-    if ($('#input-mrs').prop('checked'));
+    if ($('#input-mrs').prop('checked'))
         params.push(makeParam('mrs', 'true'));
-    if ($('#input-dmrs').prop('checked'));
+    if ($('#input-dmrs').prop('checked'))
         params.push(makeParam('dmrs', 'true'));
 
     window.location.hash = encodeURI(params.join('&'));
