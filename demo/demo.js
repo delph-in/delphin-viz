@@ -2,13 +2,18 @@ var RESOURCES = {
     'erg-uio': 'http://erg.delph-in.net/rest/0.9/parse',
     'erg-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
     'jacy-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
-    'indra-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse'
+    'indra-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse',
+    'gg-um':'http://nedned.cis.unimelb.edu.au/bottlenose/gg/parse',
+    'hag-um':'http://nedned.cis.unimelb.edu.au/bottlenose/hag/parse'
 };
+
 
 var SAMPLE_INPUT = {
     erg: 'Abrams knew that it rained.',
-    jacy: '犬 が 吠える',
-    indra: 'anjing menggonggong.'
+    jacy: '太郎 が 雨 が 降っ た こと を 知っ て い た ．',
+    indra: 'Adi tahu bahwa hujan sudah turun.',
+    gg: 'Abrams wusste, dass es regnete.',
+    hag: 'Állàh yà gáafàrtà máalàm'
 };
 
 
