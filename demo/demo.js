@@ -3,6 +3,7 @@ var RESOURCES = {
     'erg-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
     'jacy-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
     'indra-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse',
+    'zhong-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/zhong/parse',
     'gg-um':'http://nedned.cis.unimelb.edu.au/bottlenose/gg/parse',
     'hag-um':'http://nedned.cis.unimelb.edu.au/bottlenose/hag/parse'
 };
@@ -12,6 +13,7 @@ var SAMPLE_INPUT = {
     erg: 'Abrams knew that it rained.',
     jacy: '太郎 が 雨 が 降っ た こと を 知っ て い た ．',
     indra: 'Adi tahu bahwa hujan sudah turun.',
+    zhong: '张三 知道 下 过 雨 。',
     gg: 'Abrams wusste, dass es regnete.',
     hag: 'Állàh yà gáafàrtà máalàm'
 };
