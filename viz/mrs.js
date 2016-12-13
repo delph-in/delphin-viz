@@ -29,12 +29,12 @@ function MRS(parentElement, mrsData){
         
         // transform the MRS to take into account the square brackets drawn at
         // negative coordinates
-        mrs.transform({x:XGAP, y:BRACKETYPAD});
+        mrs.transform({x:XGAP+10, y:BRACKETYPAD});
         
         // update the dimensions of the final SVG to match those of the now
         // rendered MRS
         var finalBbox = mrs.tbox();
-        svg.size(finalBbox.width+5, finalBbox.height+5);
+        svg.size(finalBbox.width+10, finalBbox.height+5);
         return svg.node;
     }
 
