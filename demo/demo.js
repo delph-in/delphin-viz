@@ -1,22 +1,11 @@
-var RESOURCES = {
-    'erg-uio': 'http://erg.delph-in.net/rest/0.9/parse',
-    'erg-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
-    'jacy-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
-    'indra-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse',
-    'zhong-uw': 'http://chimpanzee.ling.washington.edu/bottlenose/zhong/parse',
-    'gg-um':'http://nedned.cis.unimelb.edu.au/bottlenose/gg/parse',
-    'hag-um':'http://nedned.cis.unimelb.edu.au/bottlenose/hag/parse'
-};
+function getCurrGramId() {
+    return $('#input-grammar')[0].value;
+}
 
 
-var SAMPLE_INPUT = {
-    erg: 'Abrams knew that it rained.',
-    jacy: '太郎 が 雨 が 降っ た こと を 知っ て い た ．',
-    indra: 'Adi tahu bahwa hujan sudah turun.',
-    zhong: '张三 知道 下 过 雨 。',
-    gg: 'Abrams wusste, dass es regnete.',
-    hag: 'Állàh yà gáafàrtà máalàm'
-};
+function getCurrGrammar() {
+    return RESOURCES[getCurrGramId()];
+}
 
 
 // Using underscore.js/lodash.js Templates
@@ -54,7 +43,6 @@ for (var template in Templates) {
     }
 }
 
-var RESULTLIST = [];
 
 function Result(result, parent) {
     var resultNum = result['result-id'] + 1;
@@ -113,7 +101,7 @@ function Result(result, parent) {
             data[vizType] = 'latex';
 
             $.ajax({
-                url: RESOURCES[$('#input-grammar')[0].value],
+                url: CURR_GRAMMAR.url,
                 dataType: 'json',
                 data: data,
                 success: function(data){
@@ -149,6 +137,14 @@ function Result(result, parent) {
         self.dmrs = DMRS($viz[0], self.data.dmrs);
     }
 
+    // remove any save links that are unsupported
+    $inner.find('.viz').each(function (){
+        var vizType = this.dataset.viz;
+        if (CAPABILITIES[CURR_GRAMMAR.server][vizType].indexOf('latex') == -1) {
+            $(this).find('[data-img="latex"]').remove();
+        }
+    });
+        
     //Add various event bindings to things in the visualisations
     $result.find('.viz').hover(
         function(event) {
@@ -216,6 +212,8 @@ function doResults(data) {
     //Create and add the results
     var parent = $('#results-container').empty()[0];
     
+    RESULTLIST = [];
+
     for (var i=0; i < data.results.length; i++) {
         var result = Result(data.results[i], parent);
         RESULTLIST.push(result);
@@ -280,9 +278,21 @@ function loadUrlParams() {
 
 $(document).ready(function(){
 
+    // Populate grammar selection with available grammars from resources.js
+    for (var i=0; i<GRAMMARS.length; i++) {
+        var gramId = GRAMMARS[i];
+        var grammar = RESOURCES[gramId];
+        console.log(gramId);
+        $('#input-grammar').append($('<option>', {
+            value: gramId,
+            text : grammar.grammar + ' (' + grammar.location + ')'
+        }));
+    }
+
     $('#input-submit').click(function(event) {
+        var currGrammar = getCurrGrammar();
         $.ajax({
-            url: RESOURCES[$('#input-grammar')[0].value],
+            url: currGrammar.url,
             dataType: 'json',
             data: {
                 'derivation': $('#input-tree').prop('checked') ? 'json' : "null",
@@ -296,6 +306,7 @@ $(document).ready(function(){
                 return data.replace(/([^,]) "pedges"/, '$1, "pedges"');
             },
             success: function(data){
+                CURR_GRAMMAR = getCurrGrammar();
                 doResults(data);
                 updateUrl();
             },
@@ -306,22 +317,14 @@ $(document).ready(function(){
         });
     });
 
-
+    // Don't think this is still used
     $('#input-grammar').on('focusin', function(){
         $(this).data('prev', $(this).val());
     });
 
     $('#input-grammar').change(function(event){
-        // Change the sample text to appropriate language
-        var prevGrammar = $(this).data('prev');
-        var thisGrammar = $(this).val();
-        var prevGramPrefix = prevGrammar.split('-')[0];
-        var thisGramPrefix = thisGrammar.split('-')[0];
-
-        if (prevGramPrefix != thisGramPrefix) {
-            $('#input-text').val(SAMPLE_INPUT[thisGramPrefix]);
-            $(this).data('prev', thisGrammar);
-        }
+        // Change the sample text
+        $('#input-text').val(getCurrGrammar().inputs[0]);
     });
 
     if (loadUrlParams())
