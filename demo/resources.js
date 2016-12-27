@@ -19,8 +19,8 @@ CAPABILITIES = {
 // Ordered list of grammar resource identifiers for presenting in the demo.
 // Should correspond to keys of RESOURCES object.
 var GRAMMARS = [
-    'erg-uio',
     'erg-uw',
+    'erg-uio',
     'jacy-uw',
     'indra-uw',
     'zhong-uw',
