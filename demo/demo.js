@@ -23,7 +23,7 @@ var SAMPLE_INPUT = {
 var Templates = {};
 
 Templates.result = [
-    '<div class="result">',
+    '<div data-result="<%= resultNum - 1%>" class="result">',
         '<div class="result-inner">',
             '<div class="num"><%= resultNum %></div>',
         '</div>',
@@ -35,6 +35,7 @@ Templates.viz = [
         '<div class="tools hidden">',
             '<div title="Save as PNG" class="save" data-img="png"><div class="icon"></div><div>PNG</div></div>',
             '<div title="Save as SVG" class="save" data-img="svg"><div class="icon"></div><div>SVG</div></div>',
+            '<div title="Save as LateX" class="save" data-img=latex><div class="icon"></div><div>LaTeX</div></div>',
         '</div>',
     '</div>'
 ].join("\n");
@@ -66,13 +67,12 @@ function Result(result, parent) {
         data : result,
         num : resultNum,
         element: $result[0],
-        saveViz : function(){},
         saveVizSvg : function(vizType) {
             var svgData = self[vizType].element.outerHTML;
             var svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
             var DOMURL = window.URL || window.webkitURL || window;
             var url = DOMURL.createObjectURL(svgBlob);
-            triggerDownload(url, 'delphin.svg');        
+            triggerDownload(url, vizType+'.svg');        
         },
         saveVizPng : function(vizType) {
             // Save SVG to a canvas
@@ -101,9 +101,33 @@ function Result(result, parent) {
                         .replace('image/png', 'image/octet-stream');
 
                 // on the image load, actually download it
-                triggerDownload(imgURI, 'delphin.png');
+                triggerDownload(imgURI, vizType+'.png');
             };
             img.src = url;
+        },
+        saveVizLatex : function(vizType, resultNum) {
+            var data = {
+                input: $('#input-text').val(),
+                results: $('#input-results').val()
+            };
+            data[vizType] = 'latex';
+
+            $.ajax({
+                url: RESOURCES[$('#input-grammar')[0].value],
+                dataType: 'json',
+                data: data,
+                success: function(data){
+                    var latex = data.results[resultNum][vizType];
+                    var textBlob = new Blob([latex], {type: "text/plain;charset=utf-8"});
+                    var DOMURL = window.URL || window.webkitURL || window;
+                    var url = DOMURL.createObjectURL(textBlob);
+                    triggerDownload(url, vizType+'.tex');
+                },
+                error: function(data){
+                    // TODO: better error handling
+                    alert("Sorry, something went wrong saving LaTex.");
+                }
+        });
         }
     };
     
@@ -136,10 +160,14 @@ function Result(result, parent) {
     ).each(function(index) {
         var vizType = this.dataset.viz;
         $(this).find('.save').click(function(event){
-            if (this.dataset.img == 'svg')
+            if (this.dataset.img == 'svg') {
                 self.saveVizSvg(vizType);
-            else if (this.dataset.img == 'png')
+            } else if (this.dataset.img == 'png') {
                 self.saveVizPng(vizType);
+            } else if (this.dataset.img == 'latex') {
+                var resultNum = $(this).closest('.result').data('result');
+                self.saveVizLatex(vizType, resultNum);
+            }
         });
     });
 
@@ -148,7 +176,7 @@ function Result(result, parent) {
 }
 
 
-function triggerDownload (imgURI, filename) {
+function triggerDownload (uri, filename) {
     var evt = new MouseEvent('click', {
         view: window,
         bubbles: false,
@@ -157,7 +185,7 @@ function triggerDownload (imgURI, filename) {
 
     var a = document.createElement('a');
     a.setAttribute('download', filename);
-    a.setAttribute('href', imgURI);
+    a.setAttribute('href', uri);
     a.setAttribute('target', '_blank');
     a.dispatchEvent(evt);
 }
@@ -264,6 +292,7 @@ $(document).ready(function(){
                 'results': $('#input-results').val()
             },
             dataFilter: function(data) {
+                // Fix buggy JSON from LKB server
                 return data.replace(/([^,]) "pedges"/, '$1, "pedges"');
             },
             success: function(data){
@@ -271,7 +300,8 @@ $(document).ready(function(){
                 updateUrl();
             },
             error: function(data){
-                alert("Error");
+                // TODO: improve error handling and reporting
+                alert("Sorry, something went wrong.");
             }
         });
     });
@@ -295,8 +325,12 @@ $(document).ready(function(){
     });
 
     if (loadUrlParams())
+        // Execute query stored in URL
         $('#input-submit').trigger('click');
-        
+    else
+        // No URL params, default to checking derivation tree
+        $('#input-tree').prop('checked', true);
+    
     if (getQueryVariable('dev') == 'true') {
         $.getJSON("elephant.json", function(data) {
             doResults(data);

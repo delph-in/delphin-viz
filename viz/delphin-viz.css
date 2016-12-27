@@ -41,7 +41,6 @@
   display: inline-block;
   background-color: #FFF;
   border-radius: 10px;
-  overflow: auto;
 }
 
 .node {

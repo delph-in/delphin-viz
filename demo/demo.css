@@ -63,7 +63,10 @@
 .tools {
     position: absolute;
     right: 5px;
+    top: -1.5em;
 }
+
+.save {display: inline-block}
 
 .save .icon {
     display: inline-block;
