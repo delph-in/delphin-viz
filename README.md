@@ -2,7 +2,17 @@
 
 A library of JavaScript micro-tools for in-browser rendering of DELPH-IN data
 structure visualizations. Targets the developmental
-[DELPH-IN API](http://moin.delph-in.net/ErgApi).
+[DELPH-IN API].
+
+## Demo
+
+delphin-viz includes a demo interface which is modelled on the LOGON
+demo. A live version can be found [here][demo].
+
+
+Dependencies (not including dependencies required for visualizations):
+* [jQuery]
+
 
 ## Visualizations
 
@@ -34,18 +44,9 @@ Dependencies:
 * [d3.js]
 
 
-## Demo
-
-delphin-viz also includes a demo interface which is modelled on the LOGON
-demo. A live version can be found [here][demo].
-
-
-Dependencies (not including dependencies required for visualizations):
-* [jQuery]
-
-
 [d3.js]: https://d3js.org/
 [svg.js]: http://svgjs.com/
 [jQuery]: https://jquery.com/
 [jQuery UI]: https://jqueryui.com/
 [demo]: http://delph-in.github.io/delphin-viz/demo/
+[DELPH-IN API]: http://moin.delph-in.net/ErgApi
