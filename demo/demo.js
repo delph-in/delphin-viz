@@ -44,6 +44,53 @@ for (var template in Templates) {
 }
 
 
+function setInlineStyles(svg, emptySvgDeclarationComputed) {
+    // Applies computed CSS styles for an SVG to the element as inline
+    // styles. This allows SVG elements to be saved as SVG and PNG images that
+    // display as viewed in the browser.
+    // This function taken from the svg-crowbar tool:
+    // https://github.com/NYTimes/svg-crowbar/blob/gh-pages/svg-crowbar-2.js
+    
+    function explicitlySetStyle (element) {
+        var cSSStyleDeclarationComputed = getComputedStyle(element);
+        var i, len, key, value;
+        var computedStyleStr = "";
+        for (i=0, len=cSSStyleDeclarationComputed.length; i<len; i++) {
+            key=cSSStyleDeclarationComputed[i];
+            value=cSSStyleDeclarationComputed.getPropertyValue(key);
+            if (value!==emptySvgDeclarationComputed.getPropertyValue(key)) {
+                computedStyleStr+=key+":"+value+";";
+            }
+        }
+        element.setAttribute('style', computedStyleStr);
+    }
+    function traverse(obj){
+        var tree = [];
+        tree.push(obj);
+        visit(obj);
+        function visit(node) {
+            if (node && node.hasChildNodes()) {
+                var child = node.firstChild;
+                while (child) {
+                    if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
+                        tree.push(child);
+                        visit(child);
+                    }
+                    child = child.nextSibling;
+                }
+            }
+        }
+        return tree;
+    }
+    // hardcode computed css styles inside svg
+    var allElements = traverse(svg);
+    var i = allElements.length;
+    while (i--){
+        explicitlySetStyle(allElements[i]);
+    }
+}
+
+
 function Result(result, parent) {
     var resultNum = result['result-id'] + 1;
 
@@ -56,6 +103,8 @@ function Result(result, parent) {
         num : resultNum,
         element: $result[0],
         saveVizSvg : function(vizType) {
+            var svg = self[vizType].element;
+            setInlineStyles(svg, emptySvgDeclarationComputed);
             var svgData = self[vizType].element.outerHTML;
             var svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
             var DOMURL = window.URL || window.webkitURL || window;
@@ -63,8 +112,11 @@ function Result(result, parent) {
             triggerDownload(url, vizType+'.svg');        
         },
         saveVizPng : function(vizType) {
-            // Save SVG to a canvas
             var svg = self[vizType].element;
+            setInlineStyles(svg, emptySvgDeclarationComputed);
+            var height = svg.getBoundingClientRect().height;
+            
+            // Save SVG to a canvas
             var canvas = $('<canvas>')[0];
             var ctx = canvas.getContext('2d');
             var bbox = svg.getBBox();
@@ -338,4 +390,10 @@ $(document).ready(function(){
             doResults(data);
         });
     }
+
+    // add empty svg element for use in saving SVGs as SVGs and PNGs
+    var emptySvg = window.document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+    window.document.body.appendChild(emptySvg);
+    emptySvgDeclarationComputed = getComputedStyle(emptySvg);
+
 });
