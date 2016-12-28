@@ -48,7 +48,7 @@ var RESOURCES = {
     },
     'jacy-uw': {
         grammar: 'Jacy',
-        lang: 'jap',
+        lang: 'jpn',
         server: 'pydelphin',
         location: 'UW',
         url: 'http://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
@@ -56,7 +56,7 @@ var RESOURCES = {
     },
     'indra-uw': {
         grammar: 'Indra',
-        lang: 'jap',
+        lang: 'ind',
         server: 'pydelphin',
         location: 'UW',
         url: 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse',
@@ -64,7 +64,7 @@ var RESOURCES = {
     },
     'zhong-uw': {
         grammar: 'Zhong',
-        lang: 'zho',
+        lang: 'cmn',
         server: 'pydelphin',
         location: 'UW',
         url: 'http://chimpanzee.ling.washington.edu/bottlenose/zhong/parse',
