@@ -282,7 +282,6 @@ $(document).ready(function(){
     for (var i=0; i<GRAMMARS.length; i++) {
         var gramId = GRAMMARS[i];
         var grammar = RESOURCES[gramId];
-        console.log(gramId);
         $('#input-grammar').append($('<option>', {
             value: gramId,
             text : grammar.grammar + ' (' + grammar.location + ')'
