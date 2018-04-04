@@ -69,21 +69,22 @@ var RESOURCES = {
         location: 'UW',
         url: 'http://chimpanzee.ling.washington.edu/bottlenose/zhong/parse',
         inputs: ['张三 知道 下 过 雨 。']
-    },
-    'gg-um': {
-        grammar: 'gg',
-        lang: 'deu',
-        server: 'pydelphin',
-        location: 'UM',
-        url: 'http://nedned.cis.unimelb.edu.au/bottlenose/gg/parse',
-        inputs: ['Abrams wusste, dass es regnete.']
-    },
-    'hag-um': {
-        grammar: 'Hausa',
-        lang: 'hau',
-        server: 'pydelphin',
-        location: 'UM',
-        url: 'http://nedned.cis.unimelb.edu.au/bottlenose/hag/parse',
-        inputs: ['Állàh yà gáafàrtà máalàm']
     }
+    // currently offline
+    // 'gg-um': {
+    //     grammar: 'gg',
+    //     lang: 'deu',
+    //     server: 'pydelphin',
+    //     location: 'UM',
+    //     url: 'http://nedned.cis.unimelb.edu.au/bottlenose/gg/parse',
+    //     inputs: ['Abrams wusste, dass es regnete.']
+    // },
+    // 'hag-um': {
+    //     grammar: 'Hausa',
+    //     lang: 'hau',
+    //     server: 'pydelphin',
+    //     location: 'UM',
+    //     url: 'http://nedned.cis.unimelb.edu.au/bottlenose/hag/parse',
+    //     inputs: ['Állàh yà gáafàrtà máalàm']
+    // }
 };
