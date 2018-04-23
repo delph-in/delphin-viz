@@ -24,8 +24,8 @@ var GRAMMARS = [
     'jacy-uw',
     'indra-uw',
     'zhong-uw',
-    'gg-um',
-    'hag-um'
+    //'gg-um',
+    //'hag-um'
 ];
 
 
