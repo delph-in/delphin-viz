@@ -21,6 +21,7 @@ CAPABILITIES = {
 var GRAMMARS = [
     'erg-uw',
     'erg-uio',
+    'ergtrunk-uw',
     'jacy-uw',
     'indra-uw',
     'zhong-uw',
@@ -44,6 +45,14 @@ var RESOURCES = {
         server: 'pydelphin',
         location: 'UW',
         url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
+        inputs: ['Abrams knew that it rained.']
+    },
+    'ergtrunk-uw': {
+        grammar: 'ERG r26803',
+        lang: 'eng',
+        server: 'pydelphin',
+        location: 'UW',
+        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg-trunk/parse',
         inputs: ['Abrams knew that it rained.']
     },
     'jacy-uw': {
