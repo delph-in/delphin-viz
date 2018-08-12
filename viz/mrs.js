@@ -25,6 +25,7 @@ function MRS(parentElement, mrsData){
         drawFeatValPair(container, 'INDEX', mrsData.index);    
         drawFeatValPair(container, 'RELS', mrsData.relations); 
         drawFeatValPair(container, 'HCONS', mrsData.constraints); 
+        drawFeatValPair(container, 'ICONS', mrsData.constraints); 
         drawSquareBrackets(mrs, XGAP);
         
         // transform the MRS to take into account the square brackets drawn at
@@ -62,11 +63,22 @@ function MRS(parentElement, mrsData){
             var featVal = group.plain(value).move(FEATNAMEXGAP, CURRENTY).attr(attrs);
         } else if (Object.prototype.toString.call(value) === '[object Array]'){
             // value is a list
-            if (name == 'RELS')
+            if (name == 'RELS') {
                 var itemFunc = relFeatStruct;
-            else if (name == 'HCONS')
+            } else if (name == 'HCONS') {
+                // filter out ICONS values from the constraints list
+                var value = value.filter(constraint => constraint.high != null);
                 var itemFunc = hconsFeatStruct;
+            } else if (name == 'ICONS') {
+                // filter out HCONS values from the constraints list
+                var value = value.filter(constraint => constraint.high == null);
+                var itemFunc = iconsFeatStruct;
+            }
 
+            if (value.length == 0)
+                // no constraints needed to render
+                return null;
+            
             var featText = group.plain(name);
             var list = drawList(group, value, itemFunc);
             var firstLine = list.select('g').first();
@@ -100,6 +112,15 @@ function MRS(parentElement, mrsData){
         drawFeatValPair(parent, 'HARG', hcon.high);
         drawFeatValPair(parent, 'LARG', hcon.low);
     }
+
+    function iconsFeatStruct(parent, icon) {
+        drawFeatStructType(parent, icon.relation);
+        Object.keys(icon).forEach(function(key,index) {
+            if (key == 'relation')
+                return;
+            drawFeatValPair(parent, key.toUpperCase(), icon[key]);
+        });
+    }    
 
     function drawList(parent, itemsData, itemFunc) {
         // The list may need to be broken up into multiple lines 
