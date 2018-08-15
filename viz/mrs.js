@@ -67,11 +67,11 @@ function MRS(parentElement, mrsData){
                 var itemFunc = relFeatStruct;
             } else if (name == 'HCONS') {
                 // filter out ICONS values from the constraints list
-                var value = value.filter(constraint => constraint.high != null);
+                var value = value.filter(constraint => constraint.high != null && constraint.high.match(/h(andle)?\d+/));
                 var itemFunc = hconsFeatStruct;
             } else if (name == 'ICONS') {
                 // filter out HCONS values from the constraints list
-                var value = value.filter(constraint => constraint.high == null);
+                var value = value.filter(constraint => constraint.high == null || !constraint.high.match(/h(andle)?\d+/));
                 var itemFunc = iconsFeatStruct;
             }
 
