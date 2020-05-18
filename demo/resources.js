@@ -19,9 +19,9 @@ CAPABILITIES = {
 // Ordered list of grammar resource identifiers for presenting in the demo.
 // Should correspond to keys of RESOURCES object.
 var GRAMMARS = [
-    'erg-uw',
+    'erg1214-uw',
     'erg-uio',
-    'ergtrunk-uw',
+    'erg2018-uw',
     'jacy-uw',
     'indra-uw',
     'zhong-uw',
@@ -32,27 +32,27 @@ var GRAMMARS = [
 
 var RESOURCES = {
     'erg-uio': {
-        grammar: 'ERG',
+        grammar: 'ERG 1214',
         lang: 'eng',
         server: 'lkb',
         location: 'UiO',
         url: 'http://erg.delph-in.net/rest/0.9/parse',
         inputs: ['Abrams knew that it rained.']
     },
-    'erg-uw': {
-        grammar: 'ERG',
+    'erg1214-uw': {
+        grammar: 'ERG 1214',
         lang: 'eng',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg/parse',
+        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg-1214/parse',
         inputs: ['Abrams knew that it rained.']
     },
-    'ergtrunk-uw': {
-        grammar: 'ERG r26803',
+    'erg2018-uw': {
+        grammar: 'ERG 2018',
         lang: 'eng',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg-trunk/parse',
+        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg-2018/parse',
         inputs: ['Abrams knew that it rained.']
     },
     'jacy-uw': {
