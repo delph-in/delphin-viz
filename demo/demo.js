@@ -375,7 +375,7 @@ $(document).ready(function(){
 
     $('#input-grammar').change(function(event){
         // Change the sample text
-        $('#input-text').val(getCurrGrammar().inputs[0]);
+        $('#sample-text').text(getCurrGrammar().inputs[0]);
     });
 
     if (loadUrlParams())
