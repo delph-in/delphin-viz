@@ -1,13 +1,13 @@
 // Capabilities of the two different server types that are currently able to
 // provide the DELPH-IN restful API.
 CAPABILITIES = {
-    'lkb' : { 
+    'lkb' : {
         'tree' : ['json'],
         'mrs' : ['json', 'latex'],
         'eds' : ['json', 'latex'],
         'dmrs' : []
     },
-    'pydelphin' : { 
+    'pydelphin' : {
         'tree' : ['json'],
         'mrs' : ['json'],
         'eds' : [],
@@ -19,9 +19,9 @@ CAPABILITIES = {
 // Ordered list of grammar resource identifiers for presenting in the demo.
 // Should correspond to keys of RESOURCES object.
 var GRAMMARS = [
+    'erg2018-uw',
     'erg1214-uw',
     'erg-uio',
-    'erg2018-uw',
     'jacy-uw',
     'indra-uw',
     'zhong-uw',
