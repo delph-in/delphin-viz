@@ -1,8 +1,6 @@
 
 function DMRS(parentElement, dmrs) {
     var dmrsData = JSON.parse(JSON.stringify(dmrs));  // make a copy
-    var maxWidth = 600,
-        height = 300;
 
     var level_dy = 25,  // vertical separation between edges
         edge_radius = 15, // rounded corner radius,
@@ -80,8 +78,7 @@ function DMRS(parentElement, dmrs) {
         y1 = dmrs.nodes[link.target].bbox.height;
         if (link.from == 0) {
             y2 = y1 + (((link.dir == 1 ? dmrs.maxTopLevel : dmrs.maxBottomLevel) + 1) * level_dy);
-            link.midpoint = {"x": x2,
-                             "y": (y1 + y2) / 2};
+            link.midpoint = {"x": x2 + 4, "y": y2};
             return ["M", x2, y2, "L", x2, y1].join(' ');
         }
         // the following is only for non-TOP links
@@ -324,7 +321,9 @@ function DMRS(parentElement, dmrs) {
               .attr("class", "rargname")
               .attr("x", function(d) { return d.midpoint.x; })
               .attr("y", function(d) { return d.midpoint.y * (-1 * d.dir) - 3; })
-              .text(function(d) { return d.rargname + "/" + d.post; } );
+              .text(function(d) {
+                  if (d.from == 0) { return "TOP"; } else { return d.rargname + "/" + d.post; }
+              });
     //  });
         return svg[0][0];
     }

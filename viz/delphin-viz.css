@@ -114,6 +114,7 @@
 
 .link.top text.rargname {
   text-anchor: start;
+  dominant-baseline: hanging;
 }
 
 .node.in { fill: red; }
