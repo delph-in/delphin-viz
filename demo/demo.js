@@ -114,12 +114,11 @@ function Result(result, parent) {
         saveVizPng : function(vizType) {
             var svg = self[vizType].element;
             setInlineStyles(svg, emptySvgDeclarationComputed);
-            var height = svg.getBoundingClientRect().height;
-            
+            var bbox = svg.getBoundingClientRect();
+
             // Save SVG to a canvas
             var canvas = $('<canvas>')[0];
             var ctx = canvas.getContext('2d');
-            var bbox = svg.getBBox();
             ctx.canvas.height = bbox.height;
             ctx.canvas.width = bbox.width;
             ctx.fillStyle = 'white';
