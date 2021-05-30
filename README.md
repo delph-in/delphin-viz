@@ -45,7 +45,7 @@ Dependencies:
 
 
 [d3.js]: https://d3js.org/
-[svg.js]: http://svgjs.com/
+[svg.js]: https://svgdotjs.github.io/
 [jQuery]: https://jquery.com/
 [jQuery UI]: https://jqueryui.com/
 [demo]: http://delph-in.github.io/delphin-viz/demo/
