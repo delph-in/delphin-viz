@@ -44,7 +44,7 @@ var RESOURCES = {
         lang: 'eng',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg-1214/parse',
+        url: 'https://chimpanzee.ling.washington.edu/bottlenose/erg-1214/parse',
         inputs: ['Abrams knew that it rained.']
     },
     'erg2018-uw': {
@@ -52,7 +52,7 @@ var RESOURCES = {
         lang: 'eng',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/erg-2018/parse',
+        url: 'https://chimpanzee.ling.washington.edu/bottlenose/erg-2018/parse',
         inputs: ['Abrams knew that it rained.']
     },
     'jacy-uw': {
@@ -60,7 +60,7 @@ var RESOURCES = {
         lang: 'jpn',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
+        url: 'https://chimpanzee.ling.washington.edu/bottlenose/jacy/parse',
         inputs: ['太郎 が 雨 が 降っ た こと を 知っ て い た ．']
     },
     'indra-uw': {
@@ -68,7 +68,7 @@ var RESOURCES = {
         lang: 'ind',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/indra/parse',
+        url: 'https://chimpanzee.ling.washington.edu/bottlenose/indra/parse',
         inputs: ['Adi tahu bahwa hujan sudah turun.']
     },
     'zhong-uw': {
@@ -76,7 +76,7 @@ var RESOURCES = {
         lang: 'cmn',
         server: 'pydelphin',
         location: 'UW',
-        url: 'http://chimpanzee.ling.washington.edu/bottlenose/zhong/parse',
+        url: 'https://chimpanzee.ling.washington.edu/bottlenose/zhong/parse',
         inputs: ['张三 知道 下 过 雨 。']
     }
     // currently offline
